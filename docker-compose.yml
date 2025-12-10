@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  # Service untuk Database PostgreSQL
+  postgres:
+    image: postgres:15-alpine
+    container_name: asos_postgres
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "5432:5432" # Mapping port container ke port laptop
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Agar data tidak hilang saat container mati
+    restart: always
+
+  # (Opsional) Service untuk pgAdmin agar bisa melihat DB lewat Browser
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: asos_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:

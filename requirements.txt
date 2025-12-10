@@ -1,0 +1,10 @@
+huggingface_hub
+python-dotenv
+pyarrow
+jupyter
+matplotlib
+seaborn
+nbformat
+scikit-learn
+streamlit
+plotly
