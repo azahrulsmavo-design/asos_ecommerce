@@ -13,14 +13,18 @@ Kita menggunakan **Star Schema**.
 ```mermaid
 erDiagram
     FACT_SALES {
-        int transaction_id PK
+        int transaction_id PK "Line Item ID"
+        string order_id "Basket ID"
         date date
         float total_amount
+        float unit_cost
+        float total_cost
         float profit
         int quantity
     }
     FACT_INVENTORY {
         int inventory_id PK
+        date snapshot_date "Stock Taken Date"
         int stock_on_hand
         int reorder_point
     }
@@ -39,14 +43,7 @@ erDiagram
         int store_id PK
         string store_name
         string region
-    }
-    DIM_CATEGORY {
-        int category_id PK
-        string category_name
-    }
-    DIM_BRAND {
-        int brand_id PK
-        string brand_name
+        string type "Channel: Online/Physical"
     }
 
     FACT_SALES }|--|| DIM_PRODUCT : "what"
@@ -54,41 +51,39 @@ erDiagram
     FACT_SALES }|--|| DIM_STORE : "where"
     FACT_INVENTORY }|--|| DIM_PRODUCT : "what"
     FACT_INVENTORY }|--|| DIM_STORE : "where"
-    DIM_PRODUCT }|--|| DIM_CATEGORY : "grouped by"
-    DIM_PRODUCT }|--|| DIM_BRAND : "made by"
 ```
 
 ---
 
 ## 2. Detail Tabel & Contoh Data
 
-Berikut adalah penjelasan setiap tabel beserta **5 Baris Contoh Data** agar Anda mudah membayangkannya.
-
 ### A. Tabel Fakta (Fact Tables)
 
 #### 1. `fact_sales` (Tabel Transaksi Utama)
-Mencatat setiap pembelian yang terjadi.
-*   **Kegunaan**: Menghitung Revenue, Profit, AOV, Sales Trend.
+*   **Grain**: 1 Baris = 1 Produk dalam 1 Order (**Line Item**).
+*   **Market Basket Analysis**: Gunakan `order_id` untuk mengelompokkan item yang dibeli bersamaan.
+*   **Formula Profit**: `profit = total_amount - total_cost` (dimana `total_cost = unit_cost * quantity`).
+*   **Channel**: Ditentukan oleh `dim_store.type` (Online vs Physical).
 
-| transaction_id | date       | time     | store_id | customer_id | product_id | quantity | total_amount | profit | payment_method |
-|:-------------- |:---------- |:-------- |:-------- |:----------- |:---------- |:-------- |:------------ |:------ |:-------------- |
-| 1001           | 2024-11-01 | 14:30:00 | 1        | 501         | 23         | 2        | £45.00       | £15.00 | Credit Card    |
-| 1002           | 2024-11-01 | 15:45:00 | 3        | 892         | 105        | 1        | £120.00      | £40.00 | PayPal         |
-| 1003           | 2024-11-02 | 10:15:00 | 2        | 120         | 23         | 1        | £22.50       | £7.50  | Debit Card     |
-| 1004           | 2024-11-02 | 11:00:00 | 1        | 55          | 88         | 5        | £250.00      | £80.00 | Klarna         |
-| 1005           | 2024-11-03 | 09:20:00 | 4        | 330         | 12         | 1        | £35.00       | £10.00 | Apple Pay      |
+| transaction_id | order_id      | date       | store_id | product_id | quantity | unit_price | total_amount | unit_cost | total_cost | profit | payment_method |
+|:-------------- |:------------- |:---------- |:-------- |:---------- |:-------- |:---------- |:------------ |:--------- |:---------- |:------ |:-------------- |
+| 1001           | ORD-A1B2      | 2024-11-01 | 1        | 23         | 2        | 22.50      | 45.00        | 10.00     | 20.00      | 25.00  | Credit Card    |
+| 1002           | ORD-A1B2      | 2024-11-01 | 1        | 88         | 1        | 50.00      | 50.00        | 20.00     | 20.00      | 30.00  | Credit Card    |
+| 1003           | ORD-C3D4      | 2024-11-02 | 2        | 120        | 1        | 22.50      | 22.50        | 12.00     | 12.00      | 10.50  | Debit Card     |
+
+*Catatan: `unit_cost` dihitung dari `base_price` * (1 - margin), tidak terpengaruh diskon promosi.*
 
 #### 2. `fact_inventory` (Tabel Stok)
-Mencatat status stok produk di setiap toko saat ini.
-*   **Kegunaan**: Cek ketersediaan barang dan deteksi stok menipis (Low Stock Alert).
+*   **Jenis Data**: Historical Snapshots (Monthly + Current).
+*   **Grain**: 1 Baris = Stok 1 Produk di 1 Toko pada tanggal `snapshot_date`.
+*   **Volume**: Mencakup snapshot bulanan (tgl 1 setiap bulan) dan snapshot hari ini untuk analisis tren.
 
-| inventory_id | store_id | product_id | stock_on_hand | reorder_point | last_restock_date |
-|:------------ |:-------- |:---------- |:------------- |:------------- |:----------------- |
-| 501          | 1        | 23         | 150           | 20            | 2024-10-25        |
-| 502          | 1        | 105        | **3**         | 10            | 2024-09-10        |
-| 503          | 2        | 23         | 45            | 15            | 2024-10-28        |
-| 504          | 2        | 88         | 200           | 50            | 2024-11-01        |
-| 505          | 3        | 12         | 0             | 5             | 2024-08-15        |
+| inventory_id | snapshot_date | store_id | product_id | stock_on_hand | reorder_point | last_restock_date |
+|:------------ |:------------- |:-------- |:---------- |:------------- |:------------- |:----------------- |
+| 501          | 2024-01-01    | 1        | 23         | 100           | 20            | 2023-12-20        |
+| 502          | 2024-02-01    | 1        | 23         | 95            | 20            | 2024-01-25        |
+| ...          | ...           | ...      | ...        | ...           | ...           | ...               |
+| 590          | **Today**     | 1        | 23         | 150           | 20            | 2024-10-25        |
 
 ---
 
@@ -99,10 +94,8 @@ Detail lengkap mengenai produk yang dijual.
 
 | product_id | name                          | sku       | brand_id | category_id | base_price | description_clean   |
 |:---------- |:----------------------------- |:--------- |:-------- |:----------- |:---------- |:------------------- |
-| 23         | Nike Sportswear T-Shirt White | NIK-001-W | 10       | 5           | £22.50     | 100% Cotton t-shirt |
-| 105        | Dr Martens 1460 Boots         | DRM-1460  | 8        | 9           | £120.00    | Leather boots black |
-| 88         | Adidas Originals Track Pants  | ADI-TRK   | 12       | 5           | £50.00     | 3-stripes pants     |
-| 12         | ASOS Design Skinny Jeans      | ASO-JEAN  | 1        | 3           | £35.00     | Stretch denim       |
+| 23         | Nike Sportswear T-Shirt White | NIK-001-W | 10       | 5           | 22.50      | 100% Cotton t-shirt |
+| 105        | Dr Martens 1460 Boots         | DRM-1460  | 8        | 9           | 120.00     | Leather boots black |
 
 #### 2. `dim_customer` (Pelanggan)
 Siapa yang membeli? Digunakan untuk segmentasi.
@@ -111,39 +104,36 @@ Siapa yang membeli? Digunakan untuk segmentasi.
 |:----------- |:------ |:--- |:---------- |:---------- |:------------- |
 | 501         | Male   | 28  | London     | 2023-01-15 | 85            |
 | 892         | Female | 34  | Manchester | 2023-05-20 | 120           |
-| 120         | Female | 22  | Scotland   | 2024-02-10 | 40            |
-| 55          | Male   | 45  | London     | 2022-11-05 | 200           |
 
-#### 3. `dim_store` (Toko)
-Di mana transaksi terjadi?
+#### 3. `dim_store` (Toko & Channel)
+Di mana transaksi terjadi? Kolom `type` membedakan channel Online vs Offline.
 
-| store_id | store_name              | region        | type     |
-|:-------- |:----------------------- |:------------- |:-------- |
-| 1        | ASOS Online             | Global        | Online   |
-| 2        | Oxford Street Flagship  | London        | Physical |
-| 3        | Manchester Arndale      | North West    | Physical |
-| 4        | Birmingham Bullring     | West Midlands | Physical |
+| store_id | store_name              | region        | type       |
+|:-------- |:----------------------- |:------------- |:---------- |
+| 1        | ASOS Online             | Global        | **Online** |
+| 2        | Oxford Street Flagship  | London        | **Physical** |
+| 3        | Manchester Arndale      | North West    | **Physical** |
 
 ---
 
-## 3. Tips Membuat Visualisasi
+## 3. Data Governance & Quality Rules
 
-Saat Anda membuka Power BI atau Tableau, gunakan panduan kolom ini:
+Untuk menjaga standar "Enterprise Ready", dataset ini mengikuti aturan berikut:
 
-1.  **Total Penjualan (Revenue)**
-    *   Ambil **Sum** dari `fact_sales.total_amount`.
-
-2.  **Produk Paling Laris**
-    *   Ambil `dim_product.name` (Axis).
-    *   Ambil **Sum** dari `fact_sales.quantity` (Values).
-
-3.  **Customer Distribution**
-    *   Ambil `dim_customer.gender` atau `dim_customer.region` (Legend).
-    *   Ambil **Count Distinct** dari `fact_sales.customer_id` (Values).
-
-4.  **Low Stock Alert (Barang mau habis)**
-    *   Filter: `fact_inventory.stock_on_hand` <= `fact_inventory.reorder_point`.
-    *   Tampilkan tabel: `dim_store.store_name`, `dim_product.name`, `fact_inventory.stock_on_hand`.
+1.  **Primary Keys**: Setiap tabel memiliki ID unik (`transaction_id`, `product_id`, dll) yang tidak boleh duplikat.
+2.  **Referential Integrity**: Semua ID di tabel Fact (`product_id`, `store_id`) **WAJIB** ada di tabel Dimension pasangannya. Tidak ada transaksi "Orphan".
+3.  **Missing Values**:
+    *   `profit` dan `total_amount` tidak boleh NULL.
+4.  **Handling Duplicate**: Jika ada order ulang dengan `transaction_id` sama, sistem ETL akan me-reject atau melakukan update (Upsert).
 
 ---
-*Dokumen ini dibuat otomatis untuk membantu pemahaman schema dataset Retail Dashboard.*
+
+## 4. Tips Membuat Visualisasi
+
+1.  **Average Order Value (AOV)**
+    *   Salah: `Average(total_amount)` (Ini adalah rata-rata harga per item!).
+    *   Benar: `Sum(total_amount) / DistinctCount(order_id)`.
+
+2.  **Margin Analysis**
+    *   Margin % = `Sum(profit) / Sum(total_amount)`.
+    *   Gunakan `unit_cost` untuk melihat dampak diskon terhadap profitabilitas (apakah promo masih untung?).

@@ -1,5 +1,5 @@
--- ASOS Retail Dashboard Schema
--- This file defines the structure for the enhanced Retail Data Warehouse.
+-- ASOS Retail Dashboard Schema (Enterprise Ready V2)
+-- Updates: Renamed cost -> unit_cost, Removed channel (redundant)
 
 -- 1. Dimension Tables ----------------------------------------------------
 
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS dim_store (
     store_id SERIAL PRIMARY KEY,
     store_name VARCHAR(100),
     region VARCHAR(100),
-    type VARCHAR(50) -- 'Online' or 'Physical'
+    type VARCHAR(50) -- Channel Source of Truth: 'Online' or 'Physical'
 );
 
 CREATE TABLE IF NOT EXISTS dim_customer (
@@ -93,25 +93,30 @@ CREATE TABLE IF NOT EXISTS fact_product_attributes (
 );
 
 -- Fact Sales (Transactions)
+-- Grain: One row per Product per Order (Line Item)
 CREATE TABLE IF NOT EXISTS fact_sales (
-    transaction_id SERIAL PRIMARY KEY,
+    transaction_id SERIAL PRIMARY KEY, -- Unique ID for the Line Item
+    order_id VARCHAR(50), -- Tie multiple items to one Basket (MBA Support)
     date TIMESTAMP NOT NULL,
     time TIMESTAMP,
     store_id INT REFERENCES dim_store(store_id),
     customer_id INT REFERENCES dim_customer(customer_id),
     product_id INT REFERENCES dim_product(product_id),
     quantity INT,
-    unit_price NUMERIC,
-    total_amount NUMERIC,
-    cost NUMERIC,
-    profit NUMERIC,
-    payment_method VARCHAR(50),
-    channel VARCHAR(20) -- Online/Offline
+    unit_price NUMERIC, -- Price at time of purchase (after discount)
+    total_amount NUMERIC, -- quantity * unit_price
+    unit_cost NUMERIC, -- BASE cost (not affected by discount)
+    total_cost NUMERIC, -- unit_cost * quantity
+    profit NUMERIC, -- total_amount - total_cost
+    payment_method VARCHAR(50)
+    -- channel removed: join dim_store.type instead
 );
 
 -- Fact Inventory (Stock Snapshots)
+-- Grain: One row per Store per Product per Snapshot
 CREATE TABLE IF NOT EXISTS fact_inventory (
     inventory_id SERIAL PRIMARY KEY,
+    snapshot_date DATE, -- To track historical stock levels
     store_id INT REFERENCES dim_store(store_id),
     product_id INT REFERENCES dim_product(product_id),
     stock_on_hand INT,
