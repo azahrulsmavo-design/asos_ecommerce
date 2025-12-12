@@ -6,9 +6,9 @@ This guide explains how to connect external BI tools like Power BI or Looker Stu
 These match your `.env` and `docker-compose.yml` configuration:
 - **Host**: `localhost`
 - **Port**: `5432`
-- **Database**: `asos_db` (or whatever is in your .env)
+- **Database**: `asos_ecommerce` (or check .env)
 - **User**: `postgres`
-- **Password**: `password_rahasia_anda` (or whatever you set in .env)
+- **Password**: `postgres` (or check .env)
 
 ---
 
@@ -18,42 +18,32 @@ These match your `.env` and `docker-compose.yml` configuration:
 2.  Click **Get Data** -> **More...**
 3.  Search for **PostgreSQL database** and select it.
 4.  **Configuration**:
-    -   **Server**: `localhost:5432`
-    -   **Database**: `asos_db`
-    -   **Data Connectivity mode**: Import (recommended for speed) or DirectQuery.
+    -   **Server**: `localhost`
+    -   **Database**: `asos_ecommerce`
+    -   **Data Connectivity mode**: Import (recommended).
 5.  Click **OK**.
 6.  **Authentication**:
-    -   Select **Database** tab on the left.
-    -   Enter **User name**: `postgres`
-    -   Enter **Password**: *[your password]*
-7.  Click **Connect**.
-8.  **Navigator**:
-    -   Select the tables you want to analyze:
-        -   `fact_product_attributes`
-        -   `fact_product_features`
-        -   `dim_product`
-        -   `dim_brand`
-        -   `dim_category`
-        -   `dim_size`
-        -   `dim_color`
+    -   Select **Database** tab.
+    -   User: `postgres`
+    -   Password: `postgres`
+    -   Click **Connect**.
+7.  **Navigator (Select These Tables)**:
+    -   `fact_sales` (New!)
+    -   `fact_inventory` (New!)
+    -   `fact_product_attributes`
+    -   `dim_product`
+    -   `dim_customer` (New!)
+    -   `dim_store` (New!)
+    -   `dim_brand`
+    -   `dim_category`
+    -   `dim_size`
     -   Click **Load**.
 
-**Tip**: In Power BI "Model View", ensure relationships are detected automatically (Star Schema). Usually Power BI handles `product_id` joins correctly.
+**Data Modeling**:
+Ensure `fact_sales` is connected to `dim_product`, `dim_customer`, and `dim_store` using the respective IDs.
 
 ---
 
-## 2. Google Looker Studio (formerly Data Studio)
+## 2. Google Looker Studio / Tableau
 
-*Note: Connecting Looker Studio (Cloud) to localhost requires a tunnel (like ngrok) or exposing your port. If you are just testing locally, Power BI Desktop is easier.*
-
-If you want to try:
-1.  Use a tool like `ngrok` to expose port 5432: `ngrok tcp 5432`.
-2.  In Looker Studio, add data source -> **PostgreSQL**.
-3.  Enter the `ngrok` host and port, along with your credentials.
-
----
-
-## 3. Tableau / Other Tools
-
--   Select **PostgreSQL** connector.
--   Use `localhost`, `5432`, `postgres`, `[password]`.
+Same connection details apply. Use the `PostgreSQL` connector and ensure port `5432` is reachable.

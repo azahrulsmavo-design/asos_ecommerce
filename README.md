@@ -1,8 +1,8 @@
-# 👗 ASOS E-commerce Data Analytics (End-to-End Project)
+# 👗 ASOS E-commerce Data Analytics (Retail Dashboard Edition)
 
-Selamat datang di proyek **End-to-End Data Analytics** menggunakan dataset katalog produk ASOS.
+Selamat datang di proyek **End-to-End Data Analytics** menggunakan dataset katalog produk ASOS yang diperkaya dengan data transaksi sintetis.
 
-Dokumentasi ini dirancang sebagai **panduan edukasi** yang menjelaskan setiap tahapan (Phase) dalam siklus hidup proyek data: mulai dari infrastruktur, pemrosesan data (ETL), analisis mendalam (Machine Learning), hingga visualisasi dashboard.
+Dokumentasi ini dirancang sebagai **panduan edukasi** yang menjelaskan setiap tahapan (Phase) dalam siklus hidup proyek data: mulai dari infrastruktur, pemrosesan data (ETL), analisis mendalam (Machine Learning), hingga pembuatan **Retail Management Dashboard**.
 
 ---
 
@@ -11,22 +11,29 @@ Dokumentasi ini dirancang sebagai **panduan edukasi** yang menjelaskan setiap ta
 2.  [Prasyarat & Setup](#prasyarat--setup)
 3.  [Phase 1: Infrastructure & Data Modeling (Star Schema)](#phase-1-infrastructure--data-modeling)
 4.  [Phase 2: ETL Pipeline (Extract, Transform, Load)](#phase-2-etl-pipeline)
-5.  [Phase 3: Analysis & Feature Engineering (EDA + ML)](#phase-3-analysis--feature-engineering)
+5.  [Phase 3: Synthetic Data Generation](#phase-3-synthetic-data-generation)
 6.  [Phase 4: Dashboarding & Reporting](#phase-4-dashboarding--reporting)
 7.  [Cara Menjalankan Proyek](#cara-menjalankan-proyek)
 
 ---
 
 ## 🌟 Gambaran Proyek
-Tujuan proyek ini adalah membangun sistem analitik untuk katalog fashion e-commerce. Kita tidak hanya sekadar membuat grafik, tapi membangun **fondasi data yang kuat** (Data Warehouse) dan **fitur cerdas** (Clustering/Recomendation helper).
+Tujuan proyek ini adalah membangun sistem analitik **Retail Dashboard** yang lengkap, mencakup 8 area bisnis utama:
+1.  **Executive Summary**: KPI Level C-Level (Revenue, Profit, Orders).
+2.  **Sales Performance**: Analisis tren dan heatmap.
+3.  **Product Performance**: Analisis margin dan best-seller.
+4.  **Inventory**: Manajemen stok dan notifikasi low-stock.
+5.  **Customer Analysis**: Demografi dan Segmentasi (RFM).
+6.  **Promotion**: Analisis dampak kampanye.
+7.  **Store Operations**: Perbandingan performa toko (Online vs Offline).
+8.  **Forecasting**: Proyeksi penjualan sederhana.
 
 **Tech Stack:**
 *   **Bahasa**: Python 3.9+
 *   **Database**: PostgreSQL 15 (Data Warehouse)
 *   **Infrastructure**: Docker & Docker Compose
 *   **ETL**: Pandas, SQLAlchemy
-*   **Machine Learning**: Scikit-Learn (K-Means, TF-IDF)
-*   **Dashboard**: Streamlit, Plotly
+*   **Dashboard**: Streamlit, Power BI (Tutorial tersedia)
 
 ---
 
@@ -45,15 +52,18 @@ Sebelum memulai, pastikan Anda memiliki:
 **1. Docker Containerization**
 Alih-alih menginstall PostgreSQL secara manual di laptop (yang bisa berantakan), kita menggunakan **Docker**.
 *   Lihat `docker-compose.yml`. File ini mendefinisikan "resep" untuk infrastruktur kita: satu container untuk Database (`postgres`) dan satu untuk Admin UI (`pgadmin`).
-*   **Keuntungan**: Konsisten. Jika teman Anda menjalankan proyek ini, dia akan mendapatkan versi database yang sama persis.
 
 **2. Data Modeling: Star Schema**
-Kita tidak menumpuk semua data dalam satu tabel Excel raksasa. Kita menggunakan **Star Schema**:
-*   **Fact Table** (`fact_product_attributes`): Berisi angka-angka/metrik (Harga, Jumlah Size, Skor). Ini adalah "pusat" dari bintang.
-*   **Dimension Tables** (`dim_brand`, `dim_category`, `dim_color`): Berisi deskripsi atau konteks.
-*   **Keuntungan**: Query jadi cepat dan fleksibel. Misalnya, kita bisa melihat "Rata-rata Harga" (Fact) berdasarkan "Brand" (Dim).
-
-> **Kode Relevan**: `sql/schema.sql` (mendefinisikan struktur tabel).
+Kita menggunakan **Star Schema** yang diperluas:
+*   **Fact Tables**:
+    *   `fact_sales`: Transaksi penjualan (pusat analisis).
+    *   `fact_inventory`: Snapshot stok harian/mingguan.
+    *   `fact_product_attributes`: Atribut numerik produk asli.
+*   **Dimension Tables**:
+    *   `dim_product`: Katalog produk lengkap.
+    *   `dim_customer`: Data pelanggan.
+    *   `dim_store`: Lokasi toko (Fisik & Online).
+    *   `dim_brand`, `dim_category`, `dim_size`: Dimensi pendukung.
 
 ---
 
@@ -61,51 +71,22 @@ Kita tidak menumpuk semua data dalam satu tabel Excel raksasa. Kita menggunakan 
 
 ### Konsep: Extract, Transform, Load
 
-Data mentah seringkali kotor. Pipeline ETL (`src/etl/etl_pipeline.py`) adalah "pabrik" yang mengolah bahan mentah menjadi produk jadi.
-
-**1. Extract (E)**
-Kita membaca data mentah dari file Parquet/CSV.
-*   *Tantangan*: Data deskripsi tersimpan sebagai string JSON yang rumit (`"{'Brand': 'Nike', ...}"`).
-
-**2. Transform (T)**
-Ini adalah otak dari pipeline:
-*   **Parsing JSON**: Mengubah string JSON menjadi Python Dictionary untuk mengambil info 'Brand' dan 'Material'.
-*   **Cleaning**: Membersihkan simbol mata uang pada harga (`£25.00` -> `25.00`).
-*   **Normalization**: Memisahkan entitas unik. Misalnya, dari ribuan baris produk, kita ekstrak daftar unik **Brand** untuk mengisi `dim_brand`.
-*   **Handling Many-to-Many**: Satu produk bisa punya banyak Size. Kita buat tabel jembatan (`bridge_product_size`) untuk menghubungkan Produk ke Size.
-
-**3. Load (L)**
-Memasukkan data bersih ke PostgreSQL.
-*   Kita menggunakan `SQLAlchemy` dan `pandas.to_sql`.
-*   Penting untuk memuat data dengan urutan yang benar (Dimension dulu, baru Fact) untuk menjaga **Referential Integrity** (Foreign Key).
+Pipeline ETL (`src/etl/etl_pipeline.py`) adalah "pabrik" yang mengolah bahan mentah menjadi produk jadi.
+*   **Extract**: Membaca data mentah katalog ASOS (JSON/CSV).
+*   **Transform**: Cleaning harga, parsing deskripsi JSON, unnesting list Size.
+*   **Load**: Memasukkan `dim_product`, `dim_brand`, `dim_category`, dan `bridge_product_size`.
 
 ---
 
-## 🧠 Phase 3: Analysis & Feature Engineering
+## 🧪 Phase 3: Synthetic Data Generation
 
-### Konsep: Dari Data Mentah ke Insight Cerdas
+Karena dataset asli hanya berisi **Katalog Produk**, kita perlu membuat data simulasi agar dashboard menjadi hidup.
 
-Setelah data bersih masuk ke database, kita melakukan dua hal:
-
-**1. Exploratory Data Analysis (EDA)**
-*   Menggunakan Jupyter Notebook (`notebooks/eda_analysis.ipynb`) untuk "berkenalan" dengan data.
-*   Contoh Insight: Distribusi harga, Brand paling dominan, dll.
-
-**2. Feature Engineering (Machine Learning)**
-Kita membuat fitur tambahan untuk analisis lanjutan di `src/analysis/feature_engineering.py`.
-
-*   **Price Standardization (Z-Score)**:
-    *   Harga £50 untuk Kaos itu mahal, tapi £50 untuk Jaket Kulit itu murah.
-    *   Kita hitung **Z-Score** per kategori. Nilai positif berarti "lebih mahal dari rata-rata kategori tersebut". Ini membuat perbandingan harga menjadi adil (apples-to-apples).
-
-*   **Text Embedding (TF-IDF + PCA)**:
-    *   Komputer tidak mengerti teks deskripsi produk.
-    *   **TF-IDF**: Mengubah kata-kata menjadi angka berdasarkan kepentingannya.
-    *   **PCA**: Meringkas ribuan fitur kata menjadi 50 fitur utama (kompresi informasi).
-
-*   **Clustering (K-Means)**:
-    *   Algoritma mengelompokkan produk yang mirip berdasarkan Harga dan Deskripsi.
-    *   Hasilnya: Kita punya `cluster_id` (0-4). Produk di cluster yang sama memiliki karakteristik serupa (misal: "Baju olahraga murah" atau "Gaun malam premium").
+Script: `src/etl/generate_mock_data.py`
+1.  **Stores**: Membuat 5 toko (Online, Oxford St, Manchester, dll).
+2.  **Customers**: Generate 1,000 profil pelanggan dengan demografi unik.
+3.  **Sales**: Mensimulasikan ~15,000 transaksi selama 1 tahun terakhir, dengan pola musiman.
+4.  **Inventory**: Mengacak stok produk di setiap toko.
 
 ---
 
@@ -113,14 +94,14 @@ Kita membuat fitur tambahan untuk analisis lanjutan di `src/analysis/feature_eng
 
 Data yang canggih tidak berguna jika tidak bisa dibaca user.
 
-**1. Streamlit Dashboard**
+**1. Streamlit Retail App**
 *   Lihat `src/dashboard/app.py`.
-*   Aplikasi web interaktif sederhana menggunakan Python.
-*   User bisa memfilter berdasarkan Brand/Category dan melihat sebaran harga serta cluster produk secara visual.
-
-**2. Business Intelligence (BI)**
-*   Data Warehouse kita (Postgres) siap dihubungkan ke tools industri seperti **Power BI**, **Tableau**, atau **Looker Studio**.
-*   Panduan koneksi ada di `docs/bi_guide.md`.
+*   Aplikasi web interaktif dengan **8 Halaman** lengkap (Sales, Inv, Cust, dll).
+*   **Run**: `streamlit run src/dashboard/app.py`
+ 
+ **2. Business Intelligence (Power BI)**
+ *   **Tutorial Pembuatan Dashboard**: Lihat panduan lengkap di [`docs/POWER_BI_TUTORIAL.md`](docs/POWER_BI_TUTORIAL.md).
+ *   Panduan ini mencakup cara koneksi PostgreSQL, Star Schema, Measure DAX, dan cara membuat visualisasi untuk ke-8 halaman tersebut.
 
 ---
 
@@ -140,22 +121,23 @@ py -m pip install -r requirements.txt
 
 **2. Jalankan Pipeline (Urut)**
 ```bash
-# Setup Schema Database
+# Setup Schema Database (Kosongkan DB)
 py -m src.db_setup
 
-# Download Data Mentah
+# Download Data Mentah Katalog (jika belum ada)
 py -m src.etl.ingest_data
 
-# Jalankan ETL (Extract-Transform-Load)
+# 1. Jalankan ETL Produk (Catalog Base)
 py -m src.etl.etl_pipeline
 
-# Jalankan Feature Engineering (ML)
-py -m src.analysis.feature_engineering
+# 2. Generate Mock Data (Sales, Customer, Inventory)
+py src/etl/generate_mock_data.py
+# (Tunggu ~30 detik hingga selesai generate 15k transaksi)
 ```
 
 **3. Lihat Hasil**
 ```bash
-# Buka Dashboard Streamlit
+# Buka Retail Dashboard
 streamlit run src/dashboard/app.py
 ```
 Akses di browser: `http://localhost:8501`
