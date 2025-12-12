@@ -9,7 +9,7 @@ Dokumen ini menjelaskan metadata lengkap mengenai dataset yang digunakan dalam p
 | Atribut | Keterangan |
 | :--- | :--- |
 | **Nama Dataset** | ASOS Retail Intelligence Dataset (Hybrid) |
-| **Versi** | 2.0 (Enhanced with Synthetic Transactions) |
+| **Versi** | 2.1 (Verified Counts) |
 | **Topik** | Fashion E-Commerce & Retail Analytics |
 | **Bahasa** | Inggris (Data), Indonesia (Dokumentasi) |
 | **Pemilik** | Proyek Edukasi (Open Source) |
@@ -24,30 +24,30 @@ Dataset ini merupakan gabungan dari data **Asli** (Real-world) dan **Sintetis** 
 ### 1. Data Katalog Produk (ASLI)
 *   **Sumber**: Scraping publik dari website ASOS (asos.com).
 *   **Isi**: Nama produk, Harga, Kategori, Brand, Warna, Deskripsi.
-*   **Jumlah**: ~5,000 SKU unik.
-*   **Kualitas**: High Fidelity (Data nyata).
+*   **Jumlah**: **~30,000 SKU unik** (High Fidelity).
+*   **Kualitas**: Data nyata dengan variasi brand dan kategori yang luas.
 
 ### 2. Data Transaksi & Pelanggan (SINTETIS)
 *   **Sumber**: Generated menggunakan Python (`numpy`, `random`).
 *   **Tujuan**: Mensimulasikan aktivitas penjualan ritel untuk keperluan dashboard.
 *   **Isi**:
-    *   **Sales**: 15,000+ Transaksi penjualan selama 12 bulan terakhir.
+    *   **Sales**: **~16,000 Transaksi penjualan** selama 12 bulan terakhir.
     *   **Customers**: 1,000 Profil pelanggan unik dengan demografi (Usia, Gender, Lokasi UK).
-    *   **Inventory**: Snapshot stok di 5 toko (1 Online, 4 Fisik).
+    *   **Inventory**: **~135,000 Snapshot Data Stok** (Stok produk di 5 cabang toko).
 *   **Pola**: Data dibuat dengan pola **musiman** (penjualan naik di Q4/Akhir Tahun) untuk realisme analisis tren.
 
 ---
 
-## 📊 Statistik Volume Data
+## 📊 Statistik Volume Data (Terverifikasi)
 
-| Tabel | Tipe | Estimasi Baris (Rows) | Deskripsi Utama |
+| Tabel | Tipe | Jumlah Baris (Actual) | Deskripsi Utama |
 | :--- | :--- | :--- | :--- |
-| `dim_product` | Dimension | ~5,000 | Katalog Barang |
-| `dim_brand` | Dimension | ~300 | Daftar Merk |
+| `dim_product` | Dimension | **29,989** | Katalog Barang Lengkap |
+| `dim_brand` | Dimension | ~300+ | Daftar Merk |
 | `dim_customer` | Dimension | 1,000 | Data Pelanggan (CRM) |
 | `dim_store` | Dimension | 5 | Lokasi Toko Ops |
-| `fact_sales` | Fact | ~16,000 | Riwayat Transaksi |
-| `fact_inventory` | Fact | ~25,000 | Stok per Toko per Produk |
+| `fact_sales` | Fact | **16,160** | Riwayat Transaksi |
+| `fact_inventory` | Fact | **135,116** | Stok per Toko per Produk (High Volume) |
 
 ---
 
