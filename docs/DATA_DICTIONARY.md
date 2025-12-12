@@ -16,28 +16,39 @@ erDiagram
         int transaction_id PK "Line Item ID"
         string order_id "Basket ID"
         date date
-        float total_amount
+        string payment_method
+        float unit_price
         float unit_cost
+        float total_amount
         float total_cost
         float profit
         int quantity
+        int store_id FK
+        int customer_id FK
+        int product_id FK
     }
     FACT_INVENTORY {
         int inventory_id PK
         date snapshot_date "Stock Taken Date"
         int stock_on_hand
         int reorder_point
+        int store_id FK
+        int product_id FK
     }
     DIM_PRODUCT {
         int product_id PK
+        string sku
         string name
         float base_price
+        string brand_name
+        string category_name
     }
     DIM_CUSTOMER {
         int customer_id PK
         string gender
         int age
         string region
+        int loyalty_score
     }
     DIM_STORE {
         int store_id PK

@@ -24,7 +24,6 @@ Before starting:
     *   `dim_product` (Catalog)
     *   `dim_customer` (People)
     *   `dim_store` (Locations & Channel)
-    *   `dim_date` (Optional, use Auto Date/Time)
     *   `dim_category`, `dim_brand`, `dim_size`
 
 5.  **Load**.
@@ -44,7 +43,15 @@ Go to **Model View** to configure relationships.
 *   `fact_inventory[product_id]` (*)--->(1) `dim_product[product_id]`
 *   `fact_inventory[store_id]` (*)--->(1) `dim_store[store_id]`
 
-> **Tip**: Ensure Date columns in `fact_sales` and `fact_inventory` (`snapshot_date`) are recognized as Dates.
+### 💡 Best Practice: Time Intelligence
+Don't rely on Auto Date/Time. Create a dedicated **Date Table**.
+1.  **Modeling Tab** -> **New Table**.
+2.  DAX:
+    ```dax
+    DateTable = CALENDAR(DATE(2023,1,1), DATE(2025,12,31))
+    ```
+3.  Mark as Date Table.
+4.  Connect `DateTable[Date]` to `fact_sales[date]` and `fact_inventory[snapshot_date]`.
 
 ---
 
@@ -62,7 +69,14 @@ Total Orders = DISTINCTCOUNT(fact_sales[order_id])
 AOV = DIVIDE([Total Revenue], [Total Orders], 0)
 ```
 
-### B. Inventory & Stock
+### B. Basket Analysis (Advanced)
+Use `order_id` to measure how many items customers buy at once.
+```dax
+Total Items Sold = SUM(fact_sales[quantity])
+Avg Items per Basket = DIVIDE([Total Items Sold], [Total Orders], 0)
+```
+
+### C. Inventory & Stock
 ```dax
 // For current stock, we need the latest snapshot
 Latest Date = LASTDATE(fact_inventory[snapshot_date])
@@ -100,7 +114,8 @@ Low Stock Item Count = CALCULATE(COUNTROWS(fact_inventory), fact_inventory[stock
 
 ### Page 6: Basket Analysis (New!)
 *   **Visuals**:
-    *   **Card**: `Avg Items per Basket` = `COUNTROWS(fact_sales) / [Total Orders]`.
+    *   **Card**: `[Avg Items per Basket]` (Target: > 1.5).
+    *   **Bar Chart**: Axis=`Category`, Values=`[Avg Items per Basket]`. (Which category drives bulk buys?).
 
 ### Page 7: Store Operations
 *   **Visuals**:
