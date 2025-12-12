@@ -56,8 +56,8 @@ Alih-alih menginstall PostgreSQL secara manual di laptop (yang bisa berantakan),
 **2. Data Modeling: Star Schema**
 Kita menggunakan **Star Schema** yang diperluas:
 *   **Fact Tables**:
-    *   `fact_sales`: Transaksi penjualan (pusat analisis).
-    *   `fact_inventory`: Snapshot stok harian/mingguan.
+    *   `fact_sales`: Transaksi penjualan (Grain: Order Item). Mendukung analisis Profit & Basket.
+    *   `fact_inventory`: Snapshot stok historis (Bulanan) & terkini.
     *   `fact_product_attributes`: Atribut numerik produk asli.
 *   **Dimension Tables**:
     *   `dim_product`: Katalog produk lengkap.
@@ -82,11 +82,11 @@ Pipeline ETL (`src/etl/etl_pipeline.py`) adalah "pabrik" yang mengolah bahan men
 
 Karena dataset asli hanya berisi **Katalog Produk**, kita perlu membuat data simulasi agar dashboard menjadi hidup.
 
-Script: `src/etl/generate_mock_data.py`
+Script: `src/etl/generate_mock_data.py` (Enterprise V2)
 1.  **Stores**: Membuat 5 toko (Online, Oxford St, Manchester, dll).
 2.  **Customers**: Generate 1,000 profil pelanggan dengan demografi unik.
-3.  **Sales**: Mensimulasikan ~15,000 transaksi selama 1 tahun terakhir, dengan pola musiman.
-4.  **Inventory**: Mengacak stok produk di setiap toko.
+3.  **Sales**: Mensimulasikan **~12,000 Order** (Multi-item basket) dengan pola musiman realistis.
+4.  **Inventory**: Membuat snapshot stok **Bulanan** selama 1 tahun terakhir.
 
 ---
 
@@ -101,7 +101,7 @@ Data yang canggih tidak berguna jika tidak bisa dibaca user.
  
  **2. Business Intelligence (Power BI)**
  *   **Tutorial Pembuatan Dashboard**: Lihat panduan lengkap di [`docs/POWER_BI_TUTORIAL.md`](docs/POWER_BI_TUTORIAL.md).
- *   Panduan ini mencakup cara koneksi PostgreSQL, Star Schema, Measure DAX, dan cara membuat visualisasi untuk ke-8 halaman tersebut.
+ *   Panduan ini mencakup cara koneksi PostgreSQL, Star Schema, Measure DAX (**Revenue, Profit, Inventory Trend**), dan cara membuat visualisasi.
 
 ---
 
@@ -132,7 +132,7 @@ py -m src.etl.etl_pipeline
 
 # 2. Generate Mock Data (Sales, Customer, Inventory)
 py src/etl/generate_mock_data.py
-# (Tunggu ~30 detik hingga selesai generate 15k transaksi)
+# (Tunggu ~30 detik hingga selesai generate data Enterprise)
 ```
 
 **3. Lihat Hasil**

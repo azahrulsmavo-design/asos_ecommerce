@@ -1,6 +1,6 @@
 # ASOS Retail Dashboard - Power BI Tutorial
 
-This guide provides a comprehensive step-by-step walkthrough to build the **Retail Management Dashboard** using the ASOS dataset (augmented with synthetic Sales & Customer data).
+This guide provides a comprehensive step-by-step walkthrough to build the **Retail Management Dashboard** using the ASOS dataset (Enterprise V2).
 
 ---
 
@@ -9,7 +9,7 @@ This guide provides a comprehensive step-by-step walkthrough to build the **Reta
 Before starting:
 *   **Power BI Desktop**: Installed.
 *   **ODBC Driver**: [PostgreSQL ODBC Driver](https://www.postgresql.org/ftp/odbc/versions/msi/) installed.
-*   **Data Generation**: Ensure you have run `python src/etl/generate_mock_data.py` so the sales tables exist.
+*   **Data Generation**: Ensure you have run `python src/etl/generate_mock_data.py` (V2) so the tables exist.
 
 ---
 
@@ -17,16 +17,15 @@ Before starting:
 
 1.  **Get Data** -> **PostgreSQL database**.
 2.  **Server**: `localhost` | **Database**: `asos_ecommerce` (or name in .env) | **Mode**: Import.
-3.  **Credentials**: User=`postgres`, Password=`postgres` (or as per .env).
+3.  **Credentials**: User=`postgres`, Password=`postgres`.
 4.  **Select Tables**:
     *   `fact_sales` (Transactions)
-    *   `fact_inventory` (Stock)
+    *   `fact_inventory` (Stock - Historical)
     *   `dim_product` (Catalog)
     *   `dim_customer` (People)
-    *   `dim_store` (Locations)
-    *   `dim_date` (If you created it, otherwise use Auto Date/Time)
-    *   `dim_category`, `dim_brand` (Product details)
-    *   `dim_size`, `bridge_product_size` (Size details)
+    *   `dim_store` (Locations & Channel)
+    *   `dim_date` (Optional, use Auto Date/Time)
+    *   `dim_category`, `dim_brand`, `dim_size`
 
 5.  **Load**.
 
@@ -40,14 +39,12 @@ Go to **Model View** to configure relationships.
 *   `fact_sales[product_id]` (*)--->(1) `dim_product[product_id]`
 *   `fact_sales[store_id]` (*)--->(1) `dim_store[store_id]`
 *   `fact_sales[customer_id]` (*)--->(1) `dim_customer[customer_id]`
-*   `dim_product[category_id]` (*)--->(1) `dim_category[category_id]`
-*   `dim_product[brand_id]` (*)--->(1) `dim_brand[brand_id]`
 
 ### Fact Inventory
 *   `fact_inventory[product_id]` (*)--->(1) `dim_product[product_id]`
 *   `fact_inventory[store_id]` (*)--->(1) `dim_store[store_id]`
 
-> **Tip**: Ensure Date columns in `fact_sales` are recognized as Dates. You can create a dedicated Date Table for better time intelligence.
+> **Tip**: Ensure Date columns in `fact_sales` and `fact_inventory` (`snapshot_date`) are recognized as Dates.
 
 ---
 
@@ -58,82 +55,61 @@ Create a new table `_Measures` to store these.
 ### A. Sales Performance
 ```dax
 Total Revenue = SUM(fact_sales[total_amount])
-Total Cost = SUM(fact_sales[cost])
+Total Cost = SUM(fact_sales[total_cost])
 Total Profit = SUM(fact_sales[profit])
 Profit Margin % = DIVIDE([Total Profit], [Total Revenue], 0)
-Total Orders = COUNTROWS(fact_sales)
+Total Orders = DISTINCTCOUNT(fact_sales[order_id])
 AOV = DIVIDE([Total Revenue], [Total Orders], 0)
 ```
 
-### B. Inventory
+### B. Inventory & Stock
 ```dax
-Total Stock Quantity = SUM(fact_inventory[stock_on_hand])
-Low Stock Item Count = CALCULATE(COUNTROWS(fact_inventory), fact_inventory[stock_on_hand] <= fact_inventory[reorder_point])
+// For current stock, we need the latest snapshot
+Latest Date = LASTDATE(fact_inventory[snapshot_date])
+Current Stock Quantity = CALCULATE(SUM(fact_inventory[stock_on_hand]), fact_inventory[snapshot_date] = [Latest Date])
+Low Stock Item Count = CALCULATE(COUNTROWS(fact_inventory), fact_inventory[stock_on_hand] <= fact_inventory[reorder_point], fact_inventory[snapshot_date] = [Latest Date])
 ```
 
 ---
 
 ## 5. Building the 8-Page Dashboard
 
-Create 8 Report Pages in Power BI.
-
 ### Page 1: Executive Summary
 *   **Visuals**:
     *   **Card**: `[Total Revenue]`, `[Total Profit]`, `[Total Orders]`, `[Profit Margin %]`.
-    *   **Line Chart**: Axis=`Date`, Values=`[Total Revenue]`.
-    *   **Donut Chart**: Legend=`dim_category[category_name]`, Values=`[Total Revenue]`.
-    *   **Bar Chart (Horizontal)**: Axis=`dim_store[store_name]`, Values=`[Total Revenue]` (Top 5 Stores).
+    *   **Donut Chart**: Legend=`dim_store[type]` (Channel), Values=`[Total Revenue]`.
 
 ### Page 2: Sales Performance
 *   **Visuals**:
-    *   **Matrix**: Rows=`Date`, Values=`[Total Revenue]`.
-    *   **Heatmap (Matrix)**: Rows=`DayOfWeek`, Columns=`Hour`, Values=`[Total Revenue]` (Use Conditional Formatting for heavy colors).
+    *   **Heatmap (Matrix)**: Rows=`DayOfWeek`, Columns=`Hour`, Values=`[Total Orders]`.
     *   **Bar Chart**: Axis=`fact_sales[payment_method]`, Values=`[Total Revenue]`.
-    *   **Pie Chart**: Legend=`fact_sales[channel]`, Values=`[Total Revenue]` (Offline vs Online).
 
-### Page 3: Product Performance
+### Page 3: Product Performance & Margin
 *   **Visuals**:
-    *   **Table**: Columns=`Product Name`, `Brand`, `Category`, `[Total Revenue]`, `[Total Profit]`. Sort by Profit.
-    *   **Scatter Plot**: X=`[Avg Unit Price]`, Y=`[Quantity Sold]`. (Price Elasticity).
-    *   **Bar Chart**: Top 10 Products by Quantity.
+    *   **Table**: Columns=`Product Name`, `[Total Revenue]`, `[Total Profit]`, `[Profit Margin %]`.
+    *   **Scatter Plot**: X=`[Total Quantity]`, Y=`[Profit Margin %]`.
 
-### Page 4: Inventory Management
+### Page 4: Inventory Trends
 *   **Visuals**:
-    *   **KPI Card**: `[Total Stock Quantity]`.
-    *   **Red Alert Card**: `[Low Stock Item Count]`.
-    *   **Table**: Filtered where `Stock <= ReorderPoint`. Columns: `Store`, `Product`, `Stock`, `ReorderPoint`.
+    *   **Line Chart**: Axis=`snapshot_date`, Values=`Sum(stock_on_hand)`. (See Stock Trend).
+    *   **Table**: Filtered by Latest Date & Low Stock.
 
 ### Page 5: Customer Analysis
 *   **Visuals**:
-    *   **Donut**: Legend=`dim_customer[gender]`, Values=`[Customer Count]`.
     *   **Map**: Location=`dim_customer[region]`, Bubble Size=`[Total Revenue]`.
-    *   **Histogram**: Axis=`dim_customer[age]`, Values=`[Customer Count]`.
 
-### Page 6: Promotion Analysis (Campaign)
-*   **Goal**: Compare two periods.
-*   **Setup**: Use a "Date Slicer".
-*   **Measure**: `Revenue Previous Period = CALCULATE([Total Revenue], SAMEPERIODLASTYEAR('Date'[Date]))`.
-*   **Visual**: Line Chart showing `[Total Revenue]` vs `[Revenue Previous Period]`.
+### Page 6: Basket Analysis (New!)
+*   **Visuals**:
+    *   **Card**: `Avg Items per Basket` = `COUNTROWS(fact_sales) / [Total Orders]`.
 
 ### Page 7: Store Operations
 *   **Visuals**:
     *   **Clustered Bar Chart**: Axis=`Store Name`, Values=`[Total Revenue]`, `[Total Profit]`.
-    *   **Table**: Store vs `[AOV]`, `[Conversion Rate]` (if traffic data exists).
 
 ### Page 8: Forecasting
 *   **Power BI Analytics Tab**:
     *   Create a **Line Chart**: Axis=`Date` (Day), Values=`[Total Revenue]`.
-    *   Go to **Analytics Pane** (Magnifying glass icon).
-    *   Enable **Forecast**.
-    *   Set **Forecast length**: 30 Points (Days).
-    *   Set **Confidence strength**: 95%.
+    *   Enable **Forecast** (30 Days).
 
 ---
-
-## 6. Final Polish
-*   **Theme**: Go to View -> Themes. Choose a dark or sleek theme.
-*   **Navigation**: Add buttons to navigate between the 8 pages if you hide the tabs.
-*   **Publish**: File -> Publish to Power BI Service provided you have an account.
-
----
-*Tutorial updated for Retail Dashboard v2.0*
+*Tutorial updated for Retail Dashboard v2.0 (Enterprise)*
