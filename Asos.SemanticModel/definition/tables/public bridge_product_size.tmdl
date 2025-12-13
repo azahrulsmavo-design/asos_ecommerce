@@ -1,0 +1,80 @@
+table 'public bridge_product_size'
+	lineageTag: b6bd9179-5ec6-4349-8a37-527e3da97f2d
+
+	measure 'Average Price' = AVERAGE('public fact_product_attributes'[price])
+		lineageTag: e62b4376-0477-4021-9b38-65e65e125689
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Max Price' = MAX('public fact_product_attributes'[price])
+		lineageTag: e656b651-8d3a-46cc-bd7d-e6044b973aba
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Min Price' = Min ('public fact_product_attributes'[price])
+		lineageTag: f4aea329-0cb7-45a0-b178-ec1a02154317
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Products' = COUNTROWS('public dim_product')
+		formatString: 0
+		lineageTag: 050cd433-d1c0-4ba9-a886-ca69b732e187
+
+	measure 'Product Selection' =
+			
+			VAR CountProd = [Total Products]
+			RETURN
+			IF(CountProd = 0, "No Products", FORMAT(CountProd, "#,0"))
+		lineageTag: b6959557-52a4-480f-97d8-67373765f838
+
+	measure 'Products with Sizes' =
+			
+			CALCULATE(
+			    [Total Products],
+			    'public fact_product_attributes'[num_sizes] > 0)
+		formatString: 0
+		lineageTag: 7a52ded7-44d5-4403-adc7-43d275a998c5
+
+	measure '% in Price Bucket' =
+			
+			DIVIDE(
+			    [Total Products],
+			    CALCULATE([Total Products], ALL('public fact_product_attributes'[price_bucket]))
+			)
+		lineageTag: 606dd82b-503b-40fa-8f6b-41a550234935
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Size Availability' = COUNTROWS('public bridge_product_size')
+		formatString: 0
+		lineageTag: e7892ddc-d2de-4535-ac1b-0f37a8d1c1f6
+
+	column product_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 01a0e61a-370c-40c6-9309-0cc41ee81fe2
+		summarizeBy: none
+		sourceColumn: product_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column size_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 8d9795a8-2c2c-41b3-8164-f0645103d1a7
+		summarizeBy: none
+		sourceColumn: size_id
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'public bridge_product_size' = m
+		mode: import
+		source =
+				let
+				    Source = #"Database Connection",
+				    public_bridge_product_size = Source{[Schema="public",Item="bridge_product_size"]}[Data]
+				in
+				    public_bridge_product_size
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,75 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.2.0/schema.json",
+  "name": "42df5bc882bfd4d0f361",
+  "position": {
+    "x": 746,
+    "y": 458,
+    "z": 6000,
+    "height": 230,
+    "width": 438,
+    "tabOrder": 6000
+  },
+  "visual": {
+    "visualType": "barChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "public dim_category"
+                    }
+                  },
+                  "Property": "category_name"
+                }
+              },
+              "queryRef": "public dim_category.category_name",
+              "nativeQueryRef": "category_name",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "public bridge_product_size"
+                    }
+                  },
+                  "Property": "Total Products"
+                }
+              },
+              "queryRef": "public bridge_product_size.Total Products",
+              "nativeQueryRef": "Total Products"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "public bridge_product_size"
+                  }
+                },
+                "Property": "Total Products"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

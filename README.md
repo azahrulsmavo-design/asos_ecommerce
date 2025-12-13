@@ -87,4 +87,4 @@ Hasil akhir dari proyek ini meliputi:
     Akses di: `http://localhost:8501`
 
 ---
-*Project by: [Your Name/Profile]*
+*Project by: Azahrul*

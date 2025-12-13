@@ -1,0 +1,85 @@
+relationship ac53831a-4e32-4f6e-869e-8c768d219631
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'public stg_asos_raw'.ingestion_ts
+	toColumn: LocalDateTable_48da89db-4494-4eb6-bb79-e9b9ad080a77.Date
+
+relationship eb8a532b-3ba4-44be-a011-fd923e8b2b67
+	fromColumn: 'public bridge_product_size'.product_id
+	toColumn: 'public dim_product'.product_id
+
+	annotation PBI_IsFromSource = FS
+
+relationship 848dcca7-5921-483c-9c50-b1c0c5cc985a
+	fromColumn: 'public bridge_product_size'.size_id
+	toColumn: 'public dim_size'.size_id
+
+	annotation PBI_IsFromSource = FS
+
+relationship 26ff7f8f-0e9d-41db-8180-aacf6ac305e3
+	fromColumn: 'public dim_product'.brand_id
+	toColumn: 'public dim_brand'.brand_id
+
+	annotation PBI_IsFromSource = FS
+
+relationship acb32ace-952e-4205-a461-5d79a06e8c86
+	fromColumn: 'public dim_product'.category_id
+	toColumn: 'public dim_category'.category_id
+
+	annotation PBI_IsFromSource = FS
+
+relationship bfad862c-3d03-4db1-b98f-3847f0542a11
+	fromColumn: 'public dim_product'.color_id
+	toColumn: 'public dim_color'.color_id
+
+	annotation PBI_IsFromSource = FS
+
+relationship 7b2f155c-b4c1-43b2-b9eb-884fb74fb867
+	fromColumn: 'public dim_product'.material_id
+	toColumn: 'public dim_material'.material_id
+
+	annotation PBI_IsFromSource = FS
+
+relationship 253463f2-94d0-4203-9bd4-42176ea94d8e
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: 'public fact_product_attributes'.product_id
+	toColumn: 'public dim_product'.product_id
+
+	annotation PBI_IsFromSource = FS
+
+relationship b81d2664-a96b-4c76-8f45-0243e6028729
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: 'public dim_image'.product_id
+	toColumn: 'public dim_product'.product_id
+
+	annotation PBI_IsFromSource = FS
+
+relationship rel_dim_product_fact_sales
+	fromColumn: 'public fact_sales'.product_id
+	toColumn: 'public dim_product'.product_id
+
+relationship rel_dim_store_fact_sales
+	fromColumn: 'public fact_sales'.store_id
+	toColumn: 'public dim_store'.store_id
+
+relationship rel_dim_customer_fact_sales
+	fromColumn: 'public fact_sales'.customer_id
+	toColumn: 'public dim_customer'.customer_id
+
+relationship rel_dim_product_fact_inventory
+	fromColumn: 'public fact_inventory'.product_id
+	toColumn: 'public dim_product'.product_id
+
+relationship rel_dim_store_fact_inventory
+	fromColumn: 'public fact_inventory'.store_id
+	toColumn: 'public dim_store'.store_id
+
+relationship rel_dim_date_fact_sales
+	fromColumn: 'public fact_sales'.date
+	toColumn: 'public dim_date'.Date
+
+relationship rel_dim_date_fact_inventory
+	fromColumn: 'public fact_inventory'.snapshot_date
+	toColumn: 'public dim_date'.Date
+

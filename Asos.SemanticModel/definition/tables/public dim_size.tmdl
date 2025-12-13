@@ -1,0 +1,49 @@
+table 'public dim_size'
+	lineageTag: 3f23cdd1-d78c-4cd6-a45a-9636df8163d2
+
+	column size_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 7ec466c8-af78-4f8d-8d25-6a619a733b08
+		summarizeBy: none
+		sourceColumn: size_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column size_label
+		dataType: string
+		lineageTag: 304103ca-749b-4859-9bf0-1e8ac644aecb
+		summarizeBy: none
+		sourceColumn: size_label
+
+		annotation SummarizationSetBy = Automatic
+
+	column region
+		dataType: string
+		lineageTag: 7c2b2be1-1aab-4059-b78e-5e1ed0a3558a
+		summarizeBy: none
+		sourceColumn: region
+
+		annotation SummarizationSetBy = Automatic
+
+	column size_numeric
+		dataType: double
+		lineageTag: 525d3aca-3b78-48bc-94fe-725a71ff3fe5
+		summarizeBy: none
+		sourceColumn: size_numeric
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition 'public dim_size' = m
+		mode: import
+		source =
+				let
+				    Source = #"Database Connection",
+				    public_dim_size = Source{[Schema="public",Item="dim_size"]}[Data]
+				in
+				    public_dim_size
+
+	annotation PBI_ResultType = Table
+

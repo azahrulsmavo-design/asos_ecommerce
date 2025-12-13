@@ -1,0 +1,49 @@
+table 'public dim_image'
+	lineageTag: 35f8d66a-81fe-4ad0-8b76-a023fba0d797
+
+	column image_id
+		dataType: int64
+		formatString: 0
+		lineageTag: bd085cd8-8c4c-47bd-938e-5e8684da735a
+		summarizeBy: sum
+		sourceColumn: image_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_id
+		dataType: int64
+		formatString: 0
+		lineageTag: c83b3fe7-5435-47a6-8752-d53c8c42f84d
+		summarizeBy: none
+		sourceColumn: product_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column image_url
+		dataType: string
+		lineageTag: e0c42b45-dfff-4b40-a178-1c446bee0610
+		summarizeBy: none
+		sourceColumn: image_url
+
+		annotation SummarizationSetBy = Automatic
+
+	column image_order
+		dataType: int64
+		formatString: 0
+		lineageTag: a927ad23-481b-4131-bed6-e22401195034
+		summarizeBy: sum
+		sourceColumn: image_order
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'public dim_image' = m
+		mode: import
+		source =
+				let
+				    Source = #"Database Connection",
+				    public_dim_image = Source{[Schema="public",Item="dim_image"]}[Data]
+				in
+				    public_dim_image
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,77 @@
+table 'public fact_inventory'
+	lineageTag: 8b6857g4-9c8b-5d3e-0f1g-2345678901bc
+
+	column inventory_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 7d6b84e5-f787-498a-87a0-beb1376cdce4
+		summarizeBy: count
+		sourceColumn: inventory_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column snapshot_date
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 7ff0aac4-41b2-43f4-b167-0b7a5d0116b9
+		summarizeBy: none
+		sourceColumn: snapshot_date
+
+		annotation SummarizationSetBy = Automatic
+
+	column store_id
+		dataType: int64
+		formatString: 0
+		lineageTag: a5b0a5a7-0d4a-4ffb-99ba-d39caeffcd2d
+		summarizeBy: none
+		sourceColumn: store_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 87d68540-960b-43ff-b336-34b4e8127bbe
+		summarizeBy: none
+		sourceColumn: product_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column stock_on_hand
+		dataType: int64
+		formatString: 0
+		lineageTag: e78bd7ca-79a2-47f7-88e7-7817b69fec32
+		summarizeBy: sum
+		sourceColumn: stock_on_hand
+
+		annotation SummarizationSetBy = Automatic
+
+	column reorder_point
+		dataType: int64
+		formatString: 0
+		lineageTag: 989b6a6f-4f80-4529-910b-bf54cb1438c3
+		summarizeBy: sum
+		sourceColumn: reorder_point
+
+		annotation SummarizationSetBy = Automatic
+
+	column last_restock_date
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 59b4e3cb-7b72-45f3-93cf-a7b778b150eb
+		summarizeBy: none
+		sourceColumn: last_restock_date
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'public fact_inventory' = m
+		mode: import
+		source =
+				let
+				    Source = #"Database Connection",
+				    public_fact_inventory = Source{[Schema="public",Item="fact_inventory"]}[Data]
+				in
+				    public_fact_inventory
+
+	annotation PBI_ResultType = Table
+

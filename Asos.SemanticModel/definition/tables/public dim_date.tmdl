@@ -1,0 +1,51 @@
+table 'public dim_date'
+	lineageTag: 1e9180j7-2f1e-8g6h-3i4j-5678901234ef
+
+	column Date
+		dataType: dateTime
+		isKey
+		formatString: General Date
+		lineageTag: 49bcf9da-0688-4af1-bee0-ac034ad0f980
+		summarizeBy: none
+		sourceColumn: [Date]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year
+		dataType: int64
+		formatString: 0
+		lineageTag: c4a85b85-924f-4ca4-9775-e2208a22c8be
+		summarizeBy: sum
+		sourceColumn: [Year]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Month
+		dataType: string
+		lineageTag: e528ccac-a8cb-4e28-b511-8f1effeea04d
+		summarizeBy: none
+		sourceColumn: [Month]
+
+		annotation SummarizationSetBy = Automatic
+
+	column MonthNo
+		dataType: int64
+		formatString: 0
+		lineageTag: 26f91dbb-bb84-4d41-9d75-71301f0468fc
+		summarizeBy: sum
+		sourceColumn: [MonthNo]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'public dim_date' = calculated
+		mode: import
+		source =
+				ADDCOLUMNS(
+					CALENDAR(DATE(2023,1,1), DATE(2025,12,31)),
+					"Year", YEAR([Date]),
+					"Month", FORMAT([Date], "MMMM"),
+					"MonthNo", MONTH([Date])
+				)
+
+	annotation PBI_Id = d03a985530664e43be7c5b16982f63f2
+

@@ -1,0 +1,133 @@
+table 'public fact_sales'
+	lineageTag: 7a5746f3-8b7a-4c2d-9e0f-1234567890ab
+
+	column transaction_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 0af59be2-4cc4-4524-849e-1ac335a48b6a
+		summarizeBy: count
+		sourceColumn: transaction_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_id
+		dataType: string
+		lineageTag: b4a04b27-5336-4fd3-bd93-2595ef261997
+		summarizeBy: none
+		sourceColumn: order_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column date
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 9765072d-7114-42d3-876c-db2fb065ecf7
+		summarizeBy: none
+		sourceColumn: date
+
+		annotation SummarizationSetBy = Automatic
+
+	column time
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 3d82363a-874f-40d2-867d-8f5a7d2858cc
+		summarizeBy: none
+		sourceColumn: time
+
+		annotation SummarizationSetBy = Automatic
+
+	column store_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 0fc731cb-69b9-432f-9f38-f101c83a7705
+		summarizeBy: none
+		sourceColumn: store_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_id
+		dataType: int64
+		formatString: 0
+		lineageTag: d3cabbe7-cca5-413e-bf1b-c34b336fc590
+		summarizeBy: none
+		sourceColumn: customer_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 121bec06-62ac-4801-975f-bf877f45d679
+		summarizeBy: none
+		sourceColumn: product_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column quantity
+		dataType: int64
+		formatString: 0
+		lineageTag: b28cda14-b70f-4e91-b276-9cbb2ba466bc
+		summarizeBy: sum
+		sourceColumn: quantity
+
+		annotation SummarizationSetBy = Automatic
+
+	column unit_price
+		dataType: double
+		lineageTag: 86dda26a-a610-42d0-9a56-b2f960b6bba0
+		summarizeBy: sum
+		sourceColumn: unit_price
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column total_amount
+		dataType: double
+		lineageTag: 7054de92-f914-49f6-9dc4-eb50ca2e5105
+		summarizeBy: sum
+		sourceColumn: total_amount
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column total_cost
+		dataType: double
+		lineageTag: ec830d7a-c251-4476-9f5f-5575beb187f8
+		summarizeBy: sum
+		sourceColumn: total_cost
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column profit
+		dataType: double
+		lineageTag: 26446d97-57d4-419f-9c9c-86847b223770
+		summarizeBy: sum
+		sourceColumn: profit
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column payment_method
+		dataType: string
+		lineageTag: ac74863b-2cb3-42e0-8c68-2661b9162a2f
+		summarizeBy: none
+		sourceColumn: payment_method
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'public fact_sales' = m
+		mode: import
+		source =
+				let
+				    Source = #"Database Connection",
+				    public_fact_sales = Source{[Schema="public",Item="fact_sales"]}[Data]
+				in
+				    public_fact_sales
+
+	annotation PBI_ResultType = Table
+

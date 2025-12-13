@@ -1,0 +1,111 @@
+table 'public stg_asos_raw'
+	lineageTag: 0aad1e3f-84be-4bcd-8b15-4def9bf11325
+
+	column id_raw
+		dataType: int64
+		formatString: 0
+		lineageTag: bbc8b1d9-44f3-49e3-90ec-2caf5a62e7d8
+		summarizeBy: sum
+		sourceColumn: id_raw
+
+		annotation SummarizationSetBy = Automatic
+
+	column url
+		dataType: string
+		lineageTag: addcfa64-0f50-4ab5-9113-969576b67d3f
+		summarizeBy: none
+		sourceColumn: url
+
+		annotation SummarizationSetBy = Automatic
+
+	column name
+		dataType: string
+		lineageTag: 3e9b7ffa-7beb-41f3-9f76-ef53db51a79f
+		summarizeBy: none
+		sourceColumn: name
+
+		annotation SummarizationSetBy = Automatic
+
+	column size_raw
+		dataType: string
+		lineageTag: 10461199-84b6-4a79-b844-d1b27f687cc6
+		summarizeBy: none
+		sourceColumn: size_raw
+
+		annotation SummarizationSetBy = Automatic
+
+	column category_raw
+		dataType: string
+		lineageTag: ebb4f1e2-ee5e-4271-a690-fe41eb8202af
+		summarizeBy: none
+		sourceColumn: category_raw
+
+		annotation SummarizationSetBy = Automatic
+
+	column price_raw
+		dataType: double
+		lineageTag: 58300cb5-774d-45d3-8bbe-cd1f3949f87e
+		summarizeBy: sum
+		sourceColumn: price_raw
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column color_raw
+		dataType: string
+		lineageTag: f21897b3-5859-4aae-aff9-a4ad175c8c2b
+		summarizeBy: none
+		sourceColumn: color_raw
+
+		annotation SummarizationSetBy = Automatic
+
+	column sku_raw
+		dataType: string
+		lineageTag: 84319f5e-b28c-4a02-ab22-16f5a776c8e9
+		summarizeBy: none
+		sourceColumn: sku_raw
+
+		annotation SummarizationSetBy = Automatic
+
+	column description_raw
+		dataType: string
+		lineageTag: c7371ecb-cf61-47c1-8b16-851f644ea3e8
+		summarizeBy: none
+		sourceColumn: description_raw
+
+		annotation SummarizationSetBy = Automatic
+
+	column images_raw
+		dataType: string
+		lineageTag: 30fe94ee-05bd-4edf-8c7d-b27f69b61e7f
+		summarizeBy: none
+		sourceColumn: images_raw
+
+		annotation SummarizationSetBy = Automatic
+
+	column ingestion_ts
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 784ee873-7a94-4ce1-90d9-d8b3a9ce4ee6
+		summarizeBy: none
+		sourceColumn: ingestion_ts
+
+		variation Variation
+			isDefault
+			relationship: ac53831a-4e32-4f6e-869e-8c768d219631
+			defaultHierarchy: LocalDateTable_48da89db-4494-4eb6-bb79-e9b9ad080a77.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'public stg_asos_raw' = m
+		mode: import
+		source =
+				let
+				    Source = #"Database Connection",
+				    public_stg_asos_raw = Source{[Schema="public",Item="stg_asos_raw"]}[Data]
+				in
+				    public_stg_asos_raw
+
+	annotation PBI_ResultType = Table
+

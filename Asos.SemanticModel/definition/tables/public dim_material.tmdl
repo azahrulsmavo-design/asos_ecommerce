@@ -1,0 +1,39 @@
+table 'public dim_material'
+	lineageTag: 7f8ee8f6-94ab-4ee5-851b-8c947d6f5463
+
+	column material_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 8d4bb607-952c-4508-930b-600140d31734
+		summarizeBy: none
+		sourceColumn: material_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column material_desc
+		dataType: string
+		lineageTag: 0c4d61e6-9550-4f71-b0c2-e3da5dfec3e2
+		summarizeBy: none
+		sourceColumn: material_desc
+
+		annotation SummarizationSetBy = Automatic
+
+	column material_main
+		dataType: string
+		lineageTag: 50694388-40b0-4a94-b7f5-92adddf4c449
+		summarizeBy: none
+		sourceColumn: material_main
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'public dim_material' = m
+		mode: import
+		source =
+				let
+				    Source = #"Database Connection",
+				    public_dim_material = Source{[Schema="public",Item="dim_material"]}[Data]
+				in
+				    public_dim_material
+
+	annotation PBI_ResultType = Table
+

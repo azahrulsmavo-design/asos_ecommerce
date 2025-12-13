@@ -1,0 +1,36 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-ID
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_QueryOrder = ["public bridge_product_size","public dim_product","public dim_size","public stg_asos_raw","public fact_product_features","public fact_product_attributes","public dim_material","public dim_image","public dim_color","public dim_category","public dim_brand"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table 'public bridge_product_size'
+ref table 'public dim_product'
+ref table 'public dim_size'
+ref table 'public stg_asos_raw'
+ref table DateTableTemplate_9430f440-3aab-4057-a587-e3f96167861b
+ref table LocalDateTable_48da89db-4494-4eb6-bb79-e9b9ad080a77
+ref table 'public fact_product_features'
+ref table 'public fact_product_attributes'
+ref table 'public dim_material'
+ref table 'public dim_image'
+ref table 'public dim_color'
+ref table 'public dim_category'
+ref table 'public dim_brand'
+ref table 'public dim_customer'
+ref table 'public dim_store'
+ref table 'public dim_date'
+ref table 'public fact_sales'
+ref table 'public fact_inventory'
+ref table _Measures
+
+ref cultureInfo en-US
+

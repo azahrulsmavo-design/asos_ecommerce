@@ -1,0 +1,39 @@
+table 'public dim_category'
+	lineageTag: 56df937b-09d4-427d-b807-ff43165f3722
+
+	column category_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 8ef925d3-d747-4ef6-a38f-93d1702187ac
+		summarizeBy: none
+		sourceColumn: category_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column category_name
+		dataType: string
+		lineageTag: 82dc16b4-cc8e-4f5c-8f4a-0025f7139a0a
+		summarizeBy: none
+		sourceColumn: category_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column category_group
+		dataType: string
+		lineageTag: 7a19865e-3cf5-45f3-a83d-e3b291200886
+		summarizeBy: none
+		sourceColumn: category_group
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'public dim_category' = m
+		mode: import
+		source =
+				let
+				    Source = #"Database Connection",
+				    public_dim_category = Source{[Schema="public",Item="dim_category"]}[Data]
+				in
+				    public_dim_category
+
+	annotation PBI_ResultType = Table
+

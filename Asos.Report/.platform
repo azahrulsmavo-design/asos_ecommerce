@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "Asos"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "b5443f78-5f36-4e8c-bd71-a1f2a0c89940"
+  }
+}

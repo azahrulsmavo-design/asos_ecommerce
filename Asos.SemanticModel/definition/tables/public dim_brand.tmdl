@@ -1,0 +1,31 @@
+table 'public dim_brand'
+	lineageTag: f12589c0-889e-425d-a0a8-41bebc873987
+
+	column brand_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 1ff98e8d-e8a2-4d8b-89c5-b0cbeaa1d279
+		summarizeBy: none
+		sourceColumn: brand_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column brand_name
+		dataType: string
+		lineageTag: 2299c9a3-ff6a-4fc8-9f83-3daf45767348
+		summarizeBy: none
+		sourceColumn: brand_name
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'public dim_brand' = m
+		mode: import
+		source =
+				let
+				    Source = #"Database Connection",
+				    public_dim_brand = Source{[Schema="public",Item="dim_brand"]}[Data]
+				in
+				    public_dim_brand
+
+	annotation PBI_ResultType = Table
+

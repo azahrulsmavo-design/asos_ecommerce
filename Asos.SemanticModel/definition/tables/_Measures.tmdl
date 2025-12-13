@@ -1,0 +1,45 @@
+table _Measures
+	lineageTag: 2f0291k8-3g2f-9h7i-4j5k-6789012345fg
+
+	measure 'Total Revenue' = SUM('public fact_sales'[total_amount])
+		lineageTag: 38b25686-353d-4c3e-8f55-1f9dfd1f11cb
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Profit' = SUM('public fact_sales'[profit])
+		lineageTag: 92c8172b-8a1a-4299-8d5c-9d6c35e23659
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Profit Margin %' = DIVIDE([Total Profit], [Total Revenue])
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 6c342d1e-8e4a-4c9b-9c3f-2d4e6f2a4b8c
+
+	measure 'Total Orders' = DISTINCTCOUNT('public fact_sales'[order_id])
+		formatString: 0
+		lineageTag: 5d8e9f2a-7c3b-4e1d-8f5a-3c4d5e6f7a8b
+
+	measure AOV = DIVIDE([Total Revenue], [Total Orders])
+		lineageTag: 8e5f1a2d-9c3b-4d7e-8f6a-4c5d6e7f8a9b
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Quantity' = SUM('public fact_sales'[quantity])
+		formatString: 0
+		lineageTag: 1f2a3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d
+
+	measure 'Stock On Hand' = SUM('public fact_inventory'[stock_on_hand])
+		formatString: 0
+		lineageTag: 2a3b4c5d-6e7f-8a9b-0c1d-2e3f4a5b6c7d
+
+	partition _Measures = m
+		mode: import
+		source =
+				let
+					Source = Table.FromRows({}, {"Column1"}),
+					#"Removed Columns" = Table.RemoveColumns(Source,{"Column1"})
+				in
+					#"Removed Columns"
+
+	annotation PBI_ResultType = Table
+

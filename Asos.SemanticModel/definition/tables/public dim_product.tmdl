@@ -1,0 +1,128 @@
+table 'public dim_product'
+	lineageTag: 4c3d0841-fa55-405f-b5db-e89587f0a7cb
+
+	column product_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 0950d815-c94d-43dc-94e7-cf69d84f750c
+		summarizeBy: none
+		sourceColumn: product_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column sku
+		dataType: string
+		lineageTag: 9adfb4f7-73f4-43c9-b32c-c4c3bab33386
+		summarizeBy: none
+		sourceColumn: sku
+
+		annotation SummarizationSetBy = Automatic
+
+	column name
+		dataType: string
+		lineageTag: 2871edce-38c2-4a92-aeb5-90da9a83f22a
+		summarizeBy: none
+		sourceColumn: name
+
+		annotation SummarizationSetBy = Automatic
+
+	column url
+		dataType: string
+		lineageTag: 5d09838c-12e4-4794-bb2c-39bd183d2624
+		summarizeBy: none
+		sourceColumn: url
+
+		annotation SummarizationSetBy = Automatic
+
+	column brand_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 5ad58deb-b442-472b-b1b9-ac548184aed4
+		summarizeBy: none
+		sourceColumn: brand_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column category_id
+		dataType: int64
+		formatString: 0
+		lineageTag: a412d5cf-21c7-4122-8be6-19ed78b46e43
+		summarizeBy: none
+		sourceColumn: category_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column color_id
+		dataType: int64
+		formatString: 0
+		lineageTag: faba74c7-8193-4550-a959-3696be67c870
+		summarizeBy: none
+		sourceColumn: color_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column material_id
+		dataType: int64
+		formatString: 0
+		lineageTag: cba0e33e-5b0e-4199-9a96-5b631e74b9ea
+		summarizeBy: none
+		sourceColumn: material_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column base_price
+		dataType: double
+		lineageTag: ab8875f7-cd3d-40a6-a779-f625455241ad
+		summarizeBy: sum
+		sourceColumn: base_price
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column has_multiple_sizes
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 9af30c47-fe36-4c92-a017-a3c43a44687f
+		summarizeBy: none
+		sourceColumn: has_multiple_sizes
+
+		annotation SummarizationSetBy = Automatic
+
+	column num_sizes
+		dataType: int64
+		formatString: 0
+		lineageTag: 87697c7b-9e5c-42b9-a8d7-62994ec341d8
+		summarizeBy: sum
+		sourceColumn: num_sizes
+
+		annotation SummarizationSetBy = Automatic
+
+	column num_images
+		dataType: int64
+		formatString: 0
+		lineageTag: ac219096-4d3f-485c-8b1b-0013fd40d3fe
+		summarizeBy: sum
+		sourceColumn: num_images
+
+		annotation SummarizationSetBy = Automatic
+
+	column description_clean
+		dataType: string
+		lineageTag: 3cc36194-8ab4-42d6-be14-b353eb063ec1
+		summarizeBy: none
+		sourceColumn: description_clean
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'public dim_product' = m
+		mode: import
+		source =
+				let
+				    Source = #"Database Connection",
+				    public_dim_product = Source{[Schema="public",Item="dim_product"]}[Data]
+				in
+				    public_dim_product
+
+	annotation PBI_ResultType = Table
+

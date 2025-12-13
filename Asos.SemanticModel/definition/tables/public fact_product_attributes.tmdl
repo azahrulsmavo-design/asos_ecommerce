@@ -1,0 +1,86 @@
+table 'public fact_product_attributes'
+	lineageTag: 3bd45b85-1d57-4461-9915-647d73c92c85
+
+	column product_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 8d393fbf-66d5-4a00-8987-605823997948
+		summarizeBy: none
+		sourceColumn: product_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column price
+		dataType: double
+		lineageTag: bf229a5e-82f1-4822-9f7b-5d3a032c85dd
+		summarizeBy: sum
+		sourceColumn: price
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column price_bucket
+		dataType: string
+		lineageTag: 3e3c51cc-5d58-4891-a160-a5a172c2ab61
+		summarizeBy: none
+		sourceColumn: price_bucket
+
+		annotation SummarizationSetBy = Automatic
+
+	column desc_length_chars
+		dataType: int64
+		formatString: 0
+		lineageTag: 575684ff-2519-42ec-a479-6046e5d86f5f
+		summarizeBy: sum
+		sourceColumn: desc_length_chars
+
+		annotation SummarizationSetBy = Automatic
+
+	column num_sizes
+		dataType: int64
+		formatString: 0
+		lineageTag: e935e4f8-f400-4aa3-8edd-c681415ae1ed
+		summarizeBy: sum
+		sourceColumn: num_sizes
+
+		annotation SummarizationSetBy = Automatic
+
+	column num_images
+		dataType: int64
+		formatString: 0
+		lineageTag: 96bfbbb8-b99d-47e6-aa4a-a033eb5c2394
+		summarizeBy: sum
+		sourceColumn: num_images
+
+		annotation SummarizationSetBy = Automatic
+
+	column has_neutral_color
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: c3382f48-8ce8-4cdd-856b-b51fb292642f
+		summarizeBy: none
+		sourceColumn: has_neutral_color
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_premium_brand
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 803de44f-157c-4219-bc1c-39d6806acf7b
+		summarizeBy: none
+		sourceColumn: is_premium_brand
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'public fact_product_attributes' = m
+		mode: import
+		source =
+				let
+				    Source = #"Database Connection",
+				    public_fact_product_attributes = Source{[Schema="public",Item="fact_product_attributes"]}[Data]
+				in
+				    public_fact_product_attributes
+
+	annotation PBI_ResultType = Table
+
