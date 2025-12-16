@@ -26,6 +26,32 @@ table 'public dim_category'
 
 		annotation SummarizationSetBy = Automatic
 
+	column 'Category Group (Derived)' =
+			
+			VAR n = LOWER ( 'public dim_category'[category_name] )
+			RETURN
+			SWITCH (
+			    TRUE(),
+			    CONTAINSSTRING(n,"coat") || CONTAINSSTRING(n,"jacket") || CONTAINSSTRING(n,"trench") || CONTAINSSTRING(n,"puffer"), "Outerwear",
+			    CONTAINSSTRING(n,"hoodie") || CONTAINSSTRING(n,"sweat") || CONTAINSSTRING(n,"jumper") || CONTAINSSTRING(n,"knit"), "Sweats & Knitwear",
+			    CONTAINSSTRING(n,"shirt") || CONTAINSSTRING(n,"tee") || CONTAINSSTRING(n,"t-shirt") || CONTAINSSTRING(n,"top"), "Tops",
+			    CONTAINSSTRING(n,"jean") || CONTAINSSTRING(n,"denim") || CONTAINSSTRING(n,"trouser") || CONTAINSSTRING(n,"pant"), "Bottoms",
+			    CONTAINSSTRING(n,"dress") || CONTAINSSTRING(n,"skirt"), "Dresses & Skirts",
+			    CONTAINSSTRING(n,"shoe") || CONTAINSSTRING(n,"trainer") || CONTAINSSTRING(n,"boot") || CONTAINSSTRING(n,"sneaker"), "Footwear",
+			    "Other"
+			)
+		lineageTag: 6664a12c-4be0-4c70-8320-4e8e35c1a4be
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	hierarchy 'category_group Hierarchy'
+		lineageTag: 8387b1f3-301e-4c25-bcd7-b4fbde0fcb39
+
+		level category_group
+			lineageTag: ab22b668-7679-427b-8c0f-ebc773d5babe
+			column: category_group
+
 	partition 'public dim_category' = m
 		mode: import
 		source =

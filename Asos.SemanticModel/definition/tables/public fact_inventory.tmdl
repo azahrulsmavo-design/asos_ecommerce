@@ -1,23 +1,16 @@
 table 'public fact_inventory'
 	lineageTag: 8b6857g4-9c8b-5d3e-0f1g-2345678901bc
 
-	column inventory_id
-		dataType: int64
-		formatString: 0
-		lineageTag: 7d6b84e5-f787-498a-87a0-beb1376cdce4
-		summarizeBy: count
-		sourceColumn: inventory_id
-
-		annotation SummarizationSetBy = Automatic
-
 	column snapshot_date
 		dataType: dateTime
-		formatString: General Date
+		formatString: Long Date
 		lineageTag: 7ff0aac4-41b2-43f4-b167-0b7a5d0116b9
 		summarizeBy: none
 		sourceColumn: snapshot_date
 
 		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
 
 	column store_id
 		dataType: int64

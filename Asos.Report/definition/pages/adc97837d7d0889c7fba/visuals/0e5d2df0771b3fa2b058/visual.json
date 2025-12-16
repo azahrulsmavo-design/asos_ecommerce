@@ -1,0 +1,185 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.2.0/schema.json",
+  "name": "0e5d2df0771b3fa2b058",
+  "position": {
+    "x": 0,
+    "y": 68,
+    "z": 0,
+    "height": 192,
+    "width": 640
+  },
+  "visual": {
+    "visualType": "pivotTable",
+    "query": {
+      "queryState": {
+        "Columns": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "public dim_date"
+                    }
+                  },
+                  "Property": "YearMonth"
+                }
+              },
+              "queryRef": "public dim_date.YearMonth",
+              "nativeQueryRef": "YearMonth",
+              "active": true
+            }
+          ]
+        },
+        "Rows": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "public dim_category"
+                    }
+                  },
+                  "Property": "Category Group (Derived)"
+                }
+              },
+              "queryRef": "public dim_category.Category Group (Derived)",
+              "nativeQueryRef": "Category Group (Derived)",
+              "active": true
+            }
+          ]
+        },
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Profit Margin %"
+                }
+              },
+              "queryRef": "_Measures.Profit Margin %",
+              "nativeQueryRef": "Profit Margin %"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "public dim_category"
+                  }
+                },
+                "Property": "Category Group (Derived)"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ]
+      }
+    },
+    "objects": {
+      "values": [
+        {
+          "properties": {
+            "fontColorPrimary": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 2,
+                      "Percent": 0
+                    }
+                  }
+                }
+              }
+            },
+            "fontColorSecondary": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 9,
+                      "Percent": 0
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "dropShadow": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "4b2d0ee65dbb43050351",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "public dim_date"
+              }
+            },
+            "Property": "YearMonth"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "d915d960b9e417aa4809",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "public dim_category"
+              }
+            },
+            "Property": "Category Group (Derived)"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "3c27c1048c7b321ad4f8",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Measures"
+              }
+            },
+            "Property": "Profit Margin %"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
+  }
+}

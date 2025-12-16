@@ -32,6 +32,34 @@ table _Measures
 		formatString: 0
 		lineageTag: 2a3b4c5d-6e7f-8a9b-0c1d-2e3f4a5b6c7d
 
+	measure 'Last Refresh' =
+			
+			"Last refresh: " &
+			FORMAT ( MAX ( 'public fact_sales'[date] ), "dd MMM yyyy" )
+		lineageTag: 6d3d96f7-cc9f-49b4-8e4e-5407457ab330
+
+	measure 'Revenue MoM' = ```
+			
+			VAR Curr = [Total Revenue]
+			VAR Prev =
+			    CALCULATE ( [Total Revenue], DATEADD ( 'public dim_date'[Date], -1, MONTH ) )
+			RETURN
+			IF ( ISBLANK ( Prev ), BLANK(), Curr - Prev )
+			
+			```
+		lineageTag: 67cc11c3-7813-4419-a4f9-df296e6265e3
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Rows Fact' = COUNTROWS ( 'public fact_sales' )
+		formatString: 0
+		lineageTag: d8ad9995-3f39-4fa3-9263-ef30930e97f0
+
+	measure 'Avg Unit Price' = AVERAGE( 'public fact_sales'[unit_price] )
+		lineageTag: dec4bc06-cf63-4f21-af48-19e835579a2c
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
 	partition _Measures = m
 		mode: import
 		source =

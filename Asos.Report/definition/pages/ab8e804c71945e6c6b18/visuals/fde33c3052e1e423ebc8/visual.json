@@ -6,8 +6,7 @@
     "y": 458,
     "z": 1000,
     "height": 230,
-    "width": 342,
-    "tabOrder": 1000
+    "width": 342
   },
   "visual": {
     "visualType": "barChart",

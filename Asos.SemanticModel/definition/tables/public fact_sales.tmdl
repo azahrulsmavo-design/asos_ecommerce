@@ -5,7 +5,7 @@ table 'public fact_sales'
 		dataType: int64
 		formatString: 0
 		lineageTag: 0af59be2-4cc4-4524-849e-1ac335a48b6a
-		summarizeBy: count
+		summarizeBy: sum
 		sourceColumn: transaction_id
 
 		annotation SummarizationSetBy = Automatic
@@ -24,6 +24,11 @@ table 'public fact_sales'
 		lineageTag: 9765072d-7114-42d3-876c-db2fb065ecf7
 		summarizeBy: none
 		sourceColumn: date
+
+		variation Variation
+			isDefault
+			relationship: c334e951-9754-40f8-a7cc-9a2fad2f1f83
+			defaultHierarchy: LocalDateTable_0ff8ff4d-992a-4d9e-8257-fef42cc5d0c7.'Date Hierarchy'
 
 		annotation SummarizationSetBy = Automatic
 
@@ -82,6 +87,8 @@ table 'public fact_sales'
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+		annotation __PBI_SemanticLinks = [{"LinkTarget":{"TableName":"public fact_sales","TableItemName":"unit_price (bins)","ObjectType":4},"LinkType":"UsedInGroup"}]
+
 	column total_amount
 		dataType: double
 		lineageTag: 7054de92-f914-49f6-9dc4-eb50ca2e5105
@@ -119,6 +126,71 @@ table 'public fact_sales'
 		sourceColumn: payment_method
 
 		annotation SummarizationSetBy = Automatic
+
+	column unit_cost
+		dataType: double
+		lineageTag: d6e09659-fd98-458e-85d1-80a5696ea49d
+		summarizeBy: sum
+		sourceColumn: unit_cost
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column SalesDate =
+			
+			DATE (
+			    YEAR ( 'public fact_sales'[date] ),
+			    MONTH ( 'public fact_sales'[date] ),
+			    DAY ( 'public fact_sales'[date] )
+			)
+		formatString: General Date
+		lineageTag: 54e09f32-7cf1-435a-aa30-624aee6d57a3
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'unit_price (bins)' =
+			IF(
+				ISBLANK('public fact_sales'[unit_price]),
+				BLANK(),
+				IF(
+					'public fact_sales'[unit_price] >= 0,
+					ROUNDDOWN('public fact_sales'[unit_price] / 10, 0) * 10,
+					ROUNDUP('public fact_sales'[unit_price] / 10, 0) * 10
+				)
+			)
+		lineageTag: 37a1e299-71b5-4a38-896b-a32d7908a976
+		summarizeBy: none
+
+		extendedProperty GroupingMetadata =
+				{
+				  "version": 0,
+				  "groupedColumns": [
+				    {
+				      "Column": {
+				        "Expression": {
+				          "SourceRef": {
+				            "Entity": "public fact_sales"
+				          }
+				        },
+				        "Property": "unit_price"
+				      }
+				    }
+				  ],
+				  "binningMetadata": {
+				    "binSize": {
+				      "value": 10.0,
+				      "unit": 0
+				    }
+				  }
+				}
+
+		annotation GroupingDesignState = {"Version":0,"Sources":[{"Name":"p","Entity":"public fact_sales"}],"GroupedColumns":[{"Column":{"Expression":{"SourceRef":{"Source":"p"}},"Property":"unit_price"}}],"BinItem":{"Expression":{"Floor":{"Expression":{"Column":{"Expression":{"SourceRef":{"Source":"p"}},"Property":"unit_price"}},"Size":10.0}}}}
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
 	partition 'public fact_sales' = m
 		mode: import

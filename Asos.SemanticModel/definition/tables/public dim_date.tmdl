@@ -1,5 +1,6 @@
 table 'public dim_date'
 	lineageTag: 1e9180j7-2f1e-8g6h-3i4j-5678901234ef
+	dataCategory: Time
 
 	column Date
 		dataType: dateTime
@@ -34,6 +35,12 @@ table 'public dim_date'
 		lineageTag: 26f91dbb-bb84-4d41-9d75-71301f0468fc
 		summarizeBy: sum
 		sourceColumn: [MonthNo]
+
+		annotation SummarizationSetBy = Automatic
+
+	column YearMonth = FORMAT ( 'public dim_date'[Date], "YYYY-MM" )
+		lineageTag: d03d2b93-ac9e-4afb-85b0-add3fa7f222f
+		summarizeBy: none
 
 		annotation SummarizationSetBy = Automatic
 

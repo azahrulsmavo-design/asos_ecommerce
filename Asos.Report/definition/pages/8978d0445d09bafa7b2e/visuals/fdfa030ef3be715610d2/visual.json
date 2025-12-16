@@ -1,0 +1,37 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.2.0/schema.json",
+  "name": "fdfa030ef3be715610d2",
+  "position": {
+    "x": 28.346674663775406,
+    "y": 28.346674663775406,
+    "z": 0,
+    "height": 58.583127638469172,
+    "width": 491.34236083877374
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "ASOS Retail Intelligence",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "28pt",
+                      "color": "#8410ff"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

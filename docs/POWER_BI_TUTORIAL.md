@@ -86,45 +86,179 @@ Low Stock Item Count = CALCULATE(COUNTROWS(fact_inventory), fact_inventory[stock
 
 ---
 
-## 5. Building the 8-Page Dashboard
+## 5. Building the 5-Page Dashboard
 
-### Page 1: Executive Summary
-*   **Visuals**:
-    *   **Card**: `[Total Revenue]`, `[Total Profit]`, `[Total Orders]`, `[Profit Margin %]`.
-    *   **Donut Chart**: Legend=`dim_store[type]` (Channel), Values=`[Total Revenue]`.
+### Page 1: Executive Overview
+**Goal**: Quick decisions in < 30 seconds.
 
-### Page 2: Sales Performance
-*   **Visuals**:
-    *   **Heatmap (Matrix)**: Rows=`DayOfWeek`, Columns=`Hour`, Values=`[Total Orders]`.
-    *   **Bar Chart**: Axis=`fact_sales[payment_method]`, Values=`[Total Revenue]`.
+*   **A. KPI Cards (Top Row)**
+    *   **Visual**: Card (New) or Multi-row Card.
+    *   **Measures**:
+        *   `Revenue = SUM(fact_sales[total_amount])`
+        *   `Profit = SUM(fact_sales[profit])`
+        *   `Margin % = DIVIDE([Profit], [Revenue])`
+        *   `Orders = DISTINCTCOUNT(fact_sales[order_id])`
+        *   `Units = SUM(fact_sales[quantity])`
+        *   `Customers = DISTINCTCOUNT(fact_sales[customer_id])`
+        *   `AOV = DIVIDE([Revenue], [Orders])`
+    *   **Styling**: No border, subtle shadow, large values, small labels.
 
-### Page 3: Product Performance & Margin
-*   **Visuals**:
-    *   **Table**: Columns=`Product Name`, `[Total Revenue]`, `[Total Profit]`, `[Profit Margin %]`.
-    *   **Scatter Plot**: X=`[Total Quantity]`, Y=`[Profit Margin %]`.
+*   **B. Trend Revenue & Profit**
+    *   **Visual**: Line or Area Chart.
+    *   **X-Axis**: Date (Drill: Day → Week → Month).
+    *   **Y-Axis**: `[Revenue]`.
+    *   **Secondary Y-Axis**: `[Profit]`.
 
-### Page 4: Inventory Trends
-*   **Visuals**:
-    *   **Line Chart**: Axis=`snapshot_date`, Values=`Sum(stock_on_hand)`. (See Stock Trend).
-    *   **Table**: Filtered by Latest Date & Low Stock.
+*   **C. Decomposition Tree**
+    *   **Analyze**: `[Revenue]`.
+    *   **Explain by**: `Store Type`, `Region`, `Category Group`, `Brand`.
+    *   *Purpose*: Replaces multiple manual filters.
 
-### Page 5: Customer Analysis
-*   **Visuals**:
-    *   **Map**: Location=`dim_customer[region]`, Bubble Size=`[Total Revenue]`.
+*   **D. Waterfall (Month-over-Month)**
+    *   **Visual**: Waterfall Chart.
+    *   **Measure**: `Revenue MoM = [Revenue] - CALCULATE([Revenue], DATEADD(dim_date[date], -1, MONTH))`.
 
-### Page 6: Basket Analysis (New!)
-*   **Visuals**:
-    *   **Card**: `[Avg Items per Basket]` (Target: > 1.5).
-    *   **Bar Chart**: Axis=`Category`, Values=`[Avg Items per Basket]`. (Which category drives bulk buys?).
+*   **E. Map (Optional)**
+    *   **Location**: `Region`.
+    *   **Size/Color**: `[Revenue]`.
 
-### Page 7: Store Operations
-*   **Visuals**:
-    *   **Clustered Bar Chart**: Axis=`Store Name`, Values=`[Total Revenue]`, `[Total Profit]`.
+*   **F. Top N Bar Chart**
+    *   **Visual**: Bar Chart.
+    *   **Data**: Top 10 Brand or Category by Revenue.
 
-### Page 8: Forecasting
-*   **Power BI Analytics Tab**:
-    *   Create a **Line Chart**: Axis=`Date` (Day), Values=`[Total Revenue]`.
-    *   Enable **Forecast** (30 Days).
+*   **G. Interactions**
+    *   Cross-filter ON.
+    *   **Drill-through**: Enable to Product Page and Customer Page.
 
 ---
-*Tutorial updated for Retail Dashboard v2.0 (Enterprise)*
+
+### Page 2: Sales Deep Dive
+**Goal**: Find the "Why", not just the "What".
+
+*   **A. Matrix (Category x Month)**
+    *   **Rows**: `Category Group`.
+    *   **Columns**: `Month`.
+    *   **Values**: `[Revenue]`, `[Profit]`, `[Margin %]`.
+    *   **Conditional Formatting**: Red-Green for Margin, Data Bars for Profit.
+
+*   **B. Small Multiples**
+    *   **Visual**: Line Chart.
+    *   **Y-Axis**: `[Revenue]`.
+    *   **X-Axis**: `Date`.
+    *   **Small Multiple**: `Category Group`.
+
+*   **C. Scatter Plot (Price vs Volume)**
+    *   **X-Axis**: `Unit Price`.
+    *   **Y-Axis**: `Units`.
+    *   **Size**: `Profit`.
+    *   *Interpretation*: Bottom-right = Expensive but low sales; Top-left = High volume, low margin.
+
+*   **D. Histogram (Binning)**
+    *   Create bins for `unit_price` and `total_amount`.
+    *   **Visual**: Column Chart using bins to show distribution of basket sizes or price points.
+
+*   **E. Key Influencers (AI Visual)**
+    *   **Target**: `Profit` (High) or `Margin %` (High).
+    *   **Explain by**: `price_bucket`, `has_neutral_color`, `is_premium_brand`, `category_group`.
+
+---
+
+### Page 3: Product & Pricing Intelligence
+**Goal**: SKU-level decisions.
+
+*   **A. Treemap**
+    *   **Hierarchy**: `Category` → `Brand`.
+    *   **Values**: `[Revenue]`.
+
+*   **B. Ribbon Chart**
+    *   **Axis**: `Date`.
+    *   **Legend**: `Brand`.
+    *   **Values**: `[Revenue]`.
+    *   *Purpose*: Shows ranking changes over time.
+
+*   **C. Product Table (Advanced)**
+    *   **Columns**: `SKU`, `Product Name`, `[Revenue]`, `[Profit]`, `[Margin %]`, `[Units]`.
+    *   **Conditional Formatting**: Icons for Margin (High/Med/Low), Color Scale for Profit.
+
+*   **D. Scatter (Price vs Margin)**
+    *   **X-Axis**: `base_price` or `unit_price`.
+    *   **Y-Axis**: `Margin %`.
+    *   **Color**: `price_bucket`.
+
+*   **E. Image Tooltip (WOW Factor)**
+    *   Create a separate tooltip page with `dim_image[image_url]`.
+    *   Bind it to the Product Table so hovering reveals the product image.
+
+*   **F. Advanced: Product Clustering**
+    *   **Slicer**: `fact_product_features[cluster_id]`.
+    *   **Visuals**: Compare `[Revenue]` and `[Margin]` per cluster.
+
+---
+
+### Page 4: Inventory & Replenishment
+**Goal**: Actionable operations.
+
+*   **A. Measures**
+    *   `Low Stock Flag = IF(SUM(stock_on_hand) < SUM(reorder_point), 1, 0)`
+    *   `Sales Velocity = DIVIDE([Units], DISTINCTCOUNT(dim_date[date]))`
+    *   `Days Since Restock = DATEDIFF(MAX(last_restock_date), TODAY(), DAY)`
+
+*   **B. KPI Cards**
+    *   Total Stock on Hand.
+    *   SKU Count below Reorder Point.
+    *   Avg Days Since Restock.
+
+*   **C. Trend Stock vs Reorder**
+    *   **Visual**: Line Chart.
+    *   **Lines**: `stock_on_hand` vs `reorder_point`.
+    *   **Drill-down**: Store → Product.
+
+*   **D. Heatmap**
+    *   **Visual**: Matrix.
+    *   **Rows**: `Store`.
+    *   **Columns**: `Category`.
+    *   **Values**: `% SKU Low Stock` (color coded).
+
+*   **E. Risk Bar Chart**
+    *   **Visual**: Bar Chart.
+    *   **Data**: Top 20 SKUs with **Low Stock** AND **High Sales Velocity**.
+
+---
+
+### Page 5: Customer & RFM Segmentation
+**Goal**: Retention & Growth.
+
+*   **A. Segment Distribution**
+    *   **Visual**: Donut or Bar Chart.
+    *   **Legend**: `Customer_Segment` (VIP, Loyal, etc.).
+    *   **Values**: `[Customers]`.
+
+*   **B. Revenue by Join Month**
+    *   **X-Axis**: `Join Month` (from `dim_customer`).
+    *   **Y-Axis**: `[Revenue]`.
+
+*   **C. Segment x Category Matrix**
+    *   **Rows**: `Customer Segment`.
+    *   **Columns**: `Category Group`.
+    *   **Values**: `[Revenue]`, `[Orders]`, `[AOV]`.
+
+*   **D. Pareto Chart (80/20 Rule)**
+    *   **X-Axis**: `Customer`.
+    *   **Line**: `Cumulative Revenue %`.
+    *   **Bars**: `[Revenue]`.
+
+*   **E. Key Influencers (VIP)**
+    *   **Target**: `Customer_Segment` is 'VIP'.
+    *   **Explain by**: `Frequency`, `Monetary`, `Category Preference`, `Region`.
+
+---
+
+### 🎨 Styling & Theme (Best Practices)
+1.  **JSON Theme**: Use a custom `theme.json` with neutral background and 1-2 brand accent colors.
+2.  **Consistency**: Use standard font (Segoe UI or Inter) and minimal borders.
+3.  **Portfolio Tips**:
+    *   Show off **Tooltips**, **Drill-throughs**, and **Bookmarks** for navigation.
+    *   Don't clutter! White space is important.
+    *   Tell a business story (Problem → Insight → Action).
+
+*Tutorial updated for Retail Dashboard v2.0*

@@ -1,0 +1,171 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.2.0/schema.json",
+  "name": "418caf9e217d9c2789a5",
+  "position": {
+    "x": 0,
+    "y": 342,
+    "z": 2,
+    "height": 344,
+    "width": 640,
+    "tabOrder": 2
+  },
+  "visual": {
+    "visualType": "scatterChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "public dim_category"
+                    }
+                  },
+                  "Property": "Category Group (Derived)"
+                }
+              },
+              "queryRef": "public dim_category.Category Group (Derived)",
+              "nativeQueryRef": "Category Group (Derived)",
+              "active": true
+            }
+          ]
+        },
+        "Size": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Total Profit"
+                }
+              },
+              "queryRef": "_Measures.Total Profit",
+              "nativeQueryRef": "Total Profit"
+            }
+          ]
+        },
+        "Tooltips": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Avg Unit Price"
+                }
+              },
+              "queryRef": "_Measures.Avg Unit Price",
+              "nativeQueryRef": "Avg Unit Price"
+            }
+          ]
+        },
+        "X": {
+          "projections": []
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Total Orders"
+                }
+              },
+              "queryRef": "_Measures.Total Orders",
+              "nativeQueryRef": "Total Orders"
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "valueAxis": [
+        {
+          "properties": {
+            "start": {
+              "expr": {
+                "Literal": {
+                  "Value": "-13D"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "6dddba54942c3413480d",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Measures"
+              }
+            },
+            "Property": "Total Orders"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "b5a1574824b6e619aae7",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Measures"
+              }
+            },
+            "Property": "Total Profit"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "ae0008f566148ade7b24",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "public dim_category"
+              }
+            },
+            "Property": "Category Group (Derived)"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "3a097ad723b810cf2d1d",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Measures"
+              }
+            },
+            "Property": "Avg Unit Price"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
+  }
+}

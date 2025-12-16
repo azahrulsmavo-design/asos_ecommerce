@@ -75,11 +75,16 @@ relationship rel_dim_store_fact_inventory
 	fromColumn: 'public fact_inventory'.store_id
 	toColumn: 'public dim_store'.store_id
 
-relationship rel_dim_date_fact_sales
-	fromColumn: 'public fact_sales'.date
-	toColumn: 'public dim_date'.Date
-
 relationship rel_dim_date_fact_inventory
 	fromColumn: 'public fact_inventory'.snapshot_date
+	toColumn: 'public dim_date'.Date
+
+relationship c334e951-9754-40f8-a7cc-9a2fad2f1f83
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'public fact_sales'.date
+	toColumn: LocalDateTable_0ff8ff4d-992a-4d9e-8257-fef42cc5d0c7.Date
+
+relationship 3216be5f-81c9-3380-add2-9a7a74891f9d
+	fromColumn: 'public fact_sales'.SalesDate
 	toColumn: 'public dim_date'.Date
 

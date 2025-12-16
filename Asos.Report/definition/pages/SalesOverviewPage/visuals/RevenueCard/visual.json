@@ -1,38 +1,38 @@
 {
-    "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.2.0/schema.json",
-    "name": "RevenueCard",
-    "position": {
-        "x": 50,
-        "y": 50,
-        "z": 1000,
-        "height": 100,
-        "width": 200,
-        "tabOrder": 1000
-    },
-    "visual": {
-        "visualType": "card",
-        "query": {
-            "queryState": {
-                "Values": {
-                    "projections": [
-                        {
-                            "field": {
-                                "Measure": {
-                                    "Expression": {
-                                        "SourceRef": {
-                                            "Entity": "_Measures"
-                                        }
-                                    },
-                                    "Property": "Total Revenue"
-                                }
-                            },
-                            "queryRef": "_Measures.Total Revenue",
-                            "nativeQueryRef": "Total Revenue"
-                        }
-                    ]
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.2.0/schema.json",
+  "name": "RevenueCard",
+  "position": {
+    "x": 50,
+    "y": 50,
+    "z": 1000,
+    "height": 100,
+    "width": 200,
+    "tabOrder": 1000
+  },
+  "visual": {
+    "visualType": "card",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Total Revenue"
                 }
+              },
+              "queryRef": "_Measures.Total Revenue",
+              "nativeQueryRef": "Total Revenue"
             }
-        },
-        "drillFilterOtherVisuals": true
-    }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
 }
