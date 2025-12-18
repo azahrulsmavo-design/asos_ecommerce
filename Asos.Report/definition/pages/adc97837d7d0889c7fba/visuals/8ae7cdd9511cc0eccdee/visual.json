@@ -4,10 +4,10 @@
   "position": {
     "x": 640,
     "y": 342,
-    "z": 3,
+    "z": 3000,
     "height": 344,
     "width": 640,
-    "tabOrder": 3
+    "tabOrder": 2000
   },
   "visual": {
     "visualType": "columnChart",
@@ -71,37 +71,5 @@
       }
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "4d4dd3dd2bb659989048",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "public fact_sales"
-              }
-            },
-            "Property": "unit_price (bins)"
-          }
-        },
-        "type": "Advanced"
-      },
-      {
-        "name": "3a1e53ceed00138795f2",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "_Measures"
-              }
-            },
-            "Property": "Total Orders"
-          }
-        },
-        "type": "Advanced"
-      }
-    ]
   }
 }

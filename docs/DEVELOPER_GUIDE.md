@@ -1,10 +1,10 @@
-# 👨‍💻 Developer Guide & Project Mapping
+# Developer Guide & Project Mapping
 
 Dokumen ini berisi panduan teknis mendalam mengenai struktur file proyek dan cara mengakses database untuk keperluan pengembangan atau eksplorasi lebih lanjut.
 
 ---
 
-## 📂 1. Project Structure Mapping (Peta File)
+##  1. Project Structure Mapping (Peta File)
 
 Berikut adalah peran dan fungsi dari setiap file utama dalam repository ini:
 
@@ -20,6 +20,8 @@ Berikut adalah peran dan fungsi dari setiap file utama dalam repository ini:
 | `src/utils/db_utils.py` | Fungsi bantuan (helper) untuk koneksi & insert dataframe. | **Utility**. Mencegah duplikasi kode koneksi database. |
 | `src/etl/etl_pipeline.py` | Membersihkan data Katalog Produk asli (`.json` -> DB). | **Core ETL**. Mengubah raw data produk menjadi tabel dimensi (`dim_product`). |
 | `src/etl/generate_mock_data.py` | Membuat data transaksi, stok, dan customer sintetis. | **Data Generator**. "Otak" yang mensimulasikan aktivitas bisnis Enterprise V2. |
+| `src/populate_brand_master.py` | Deduplikasi & Normalisasi Brand (Fuzzy Matching). | **Data Governance**. Membuat canonical `brand_master` dari raw data. |
+| `src/analysis/verify_brand_master.py` | Verifikasi kualitas data brand (No duplicates). | **Quality Control**. Script pengujian integritas brand master. |
 | **Analysis & Dashboard** | | |
 | `src/analysis/customer_segmentation.py` | Menghitung RFM Score dan menentukan segmen customer. | **Analytics Engine**. Menjalankan logika bisnis untuk segmentasi pelanggan. |
 | `src/dashboard/app.py` | Aplikasi web interaktif menggunakan Streamlit. | **Frontend**. Wajah visual proyek yang diakses oleh End-User. |
@@ -30,7 +32,7 @@ Berikut adalah peran dan fungsi dari setiap file utama dalam repository ini:
 
 ---
 
-## 🔌 2. Cara Mengakses Database (Database Access)
+##  2. Cara Mengakses Database (Database Access)
 
 Karena database berjalan di dalam **Docker**, ada 3 cara untuk mengaksesnya:
 
@@ -45,8 +47,8 @@ Tools ini sudah terinstall otomatis lewat Docker dan berjalan dalam jaringan int
     *   Klik Kanan **Servers** -> **Register** -> **Server...**
     *   **Tab General**: Nama = `ASOS Local`
     *   **Tab Connection**:
-        *   **Host**: `postgres` (⚠️ Penting: pakai nama service docker, bukan localhost)
-        *   **Port**: `5432` (⚠️ Internal Docker Port tetap 5432)
+        *   **Host**: `postgres`
+        *   **Port**: `5432` 
         *   **Maintenance database**: `asos_ecommerce`
         *   **Username**: `postgres`
         *   **Password**: `postgres`
@@ -57,7 +59,7 @@ Tools ini sudah terinstall otomatis lewat Docker dan berjalan dalam jaringan int
 Jika Anda ingin menggunakan aplikasi yang terinstall di Windows/Mac Anda (akses dari luar Docker).
 
 *   **Host**: `localhost`
-*   **Port**: `5433` (⚠️ **NOTE**: Kita menggunakan port 5433 untuk menghindari konflik dengan PostgreSQL lokal di laptop Anda yang biasanya memakai 5432).
+*   **Port**: `5433` 
 *   **Database**: `asos_ecommerce`
 *   **Username**: `postgres`
 *   **Password**: `postgres`

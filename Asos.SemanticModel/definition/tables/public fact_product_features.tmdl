@@ -40,3 +40,5 @@ table 'public fact_product_features'
 
 	annotation PBI_ResultType = Table
 
+	annotation PBI_NavigationStepName = Navigation
+

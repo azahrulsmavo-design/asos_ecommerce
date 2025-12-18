@@ -115,6 +115,15 @@ table 'public dim_product'
 
 		annotation SummarizationSetBy = Automatic
 
+	column brand_master_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 5509f515-fa75-40df-bd25-2ebdceaf9865
+		summarizeBy: sum
+		sourceColumn: brand_master_id
+
+		annotation SummarizationSetBy = Automatic
+
 	partition 'public dim_product' = m
 		mode: import
 		source =
@@ -125,4 +134,6 @@ table 'public dim_product'
 				    public_dim_product
 
 	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
 

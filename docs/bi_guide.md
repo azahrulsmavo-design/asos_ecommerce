@@ -34,7 +34,8 @@ These match your `.env` and `docker-compose.yml` configuration:
     -   `dim_product`
     -   `dim_customer` (New!)
     -   `dim_store` (New!)
-    -   `dim_brand`
+    -   `brand_master` (Canonical!)
+    -   `dim_brand` (Legacy)
     -   `dim_category`
     -   `dim_size`
     -   Click **Load**.

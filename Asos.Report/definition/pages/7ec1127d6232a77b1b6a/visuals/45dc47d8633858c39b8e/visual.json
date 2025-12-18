@@ -4,10 +4,10 @@
   "position": {
     "x": 640,
     "y": 164,
-    "z": 8003,
+    "z": 2000,
     "height": 258,
     "width": 640,
-    "tabOrder": 8003
+    "tabOrder": 2000
   },
   "visual": {
     "visualType": "waterfallChart",
@@ -88,34 +88,6 @@
         },
         "type": "Advanced",
         "howCreated": "User"
-      },
-      {
-        "name": "da60fb3bee25652bbd09",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "_Measures"
-              }
-            },
-            "Property": "Revenue MoM"
-          }
-        },
-        "type": "Advanced"
-      },
-      {
-        "name": "86822b6565563f046a1c",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "public dim_date"
-              }
-            },
-            "Property": "YearMonth"
-          }
-        },
-        "type": "Categorical"
       }
     ],
     "filterSortOrder": "Custom"

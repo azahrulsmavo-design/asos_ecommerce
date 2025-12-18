@@ -1,10 +1,10 @@
-# 🪪 Identitas Dataset (Dataset Identity)
+#  Identitas Dataset (Dataset Identity)
 
 Dokumen ini menjelaskan metadata lengkap mengenai dataset yang digunakan dalam proyek **ASOS Retail Dashboard**.
 
 ---
 
-## 📌 Informasi Umum
+## Informasi Umum
 
 | Atribut | Keterangan |
 | :--- | :--- |
@@ -17,7 +17,7 @@ Dokumen ini menjelaskan metadata lengkap mengenai dataset yang digunakan dalam p
 
 ---
 
-## 📦 Komposisi & Sumber Data
+## Komposisi & Sumber Data
 
 Dataset ini merupakan gabungan dari data **Asli** (Real-world) dan **Sintetis** (Generated).
 
@@ -38,7 +38,7 @@ Dataset ini merupakan gabungan dari data **Asli** (Real-world) dan **Sintetis** 
 
 ---
 
-## 📊 Statistik Volume Data (Terverifikasi)
+## Statistik Volume Data (Terverifikasi)
 
 Data ini telah diverifikasi menggunakan query SQL berikut pada tanggal **12 Desember 2025**:
 
@@ -65,7 +65,8 @@ WHERE p.product_id IS NULL;
 | Tabel | Tipe | Jumlah Baris (Est) | Deskripsi Utama |
 | :--- | :--- | :--- | :--- |
 | `dim_product` | Dimension | **29,989** | Katalog Barang Lengkap |
-| `dim_brand` | Dimension | ~300+ | Daftar Merk |
+| `dim_brand` | Dimension | ~2100+ | Daftar Merk (Raw) |
+| `brand_master` | Dimension | **~1900** | Daftar Merk (Canonical) |
 | `dim_category` | Dimension | **~25** | Kategori Produk (Shoes, Accessories, dll) |
 | `dim_customer` | Dimension | 1,000 | Data Pelanggan (CRM) |
 | `dim_store` | Dimension | 5 | Lokasi Toko Ops |
@@ -74,7 +75,7 @@ WHERE p.product_id IS NULL;
 
 ---
 
-## 🎯 Kegunaan (Use Cases)
+## Kegunaan (Use Cases)
 
 Dataset ini dirancang untuk mendukung pembelajaran dan simulasi kasus bisnis berikut:
 
@@ -86,7 +87,7 @@ Dataset ini dirancang untuk mendukung pembelajaran dan simulasi kasus bisnis ber
 
 ---
 
-## ⚠️ Catatan Lisensi & Privasi
+## Catatan Lisensi & Privasi
 
 *   **Non-Komersial**: Dataset ini **TIDAK UNTUK KOMERSIAL**. Hanya untuk tujuan edukasi dan portfolio analitik.
 *   **Scraping Disclaimer**: Data produk diambil dari sumber publik (ASOS) di bawah prinsip Fair Use untuk riset/edukasi. Jika digunakan di produksi, Anda wajib mengganti data ini dengan data dummy/anonim.

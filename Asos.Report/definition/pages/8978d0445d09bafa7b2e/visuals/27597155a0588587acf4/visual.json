@@ -7,7 +7,7 @@
     "z": 3000,
     "height": 73.75,
     "width": 192.5,
-    "tabOrder": 3000
+    "tabOrder": 2000
   },
   "visual": {
     "visualType": "slicer",
@@ -124,23 +124,5 @@
       ]
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "442a5df31f2b8ea67d8f",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "public dim_store"
-              }
-            },
-            "Property": "type"
-          }
-        },
-        "type": "Categorical"
-      }
-    ]
   }
 }

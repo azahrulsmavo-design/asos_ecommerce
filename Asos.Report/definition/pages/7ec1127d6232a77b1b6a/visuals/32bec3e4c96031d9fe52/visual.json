@@ -4,10 +4,10 @@
   "position": {
     "x": 30,
     "y": 164,
-    "z": 8002,
+    "z": 1000,
     "height": 258,
     "width": 610,
-    "tabOrder": 8002
+    "tabOrder": 1000
   },
   "visual": {
     "visualType": "lineChart",
@@ -158,51 +158,5 @@
       ]
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "e5d0ff21fa8fd3dbf386",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "_Measures"
-              }
-            },
-            "Property": "Total Revenue"
-          }
-        },
-        "type": "Advanced"
-      },
-      {
-        "name": "18b6c2539740ce18947d",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "public fact_sales"
-              }
-            },
-            "Property": "date"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "cb0aeae33a22f9e9b302",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "_Measures"
-              }
-            },
-            "Property": "Total Profit"
-          }
-        },
-        "type": "Advanced"
-      }
-    ]
   }
 }

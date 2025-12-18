@@ -21,6 +21,23 @@ CREATE TABLE IF NOT EXISTS dim_brand (
     brand_name TEXT UNIQUE NOT NULL
 );
 
+-- 2b. Brand Master Tables (Golden Rules)
+CREATE TABLE IF NOT EXISTS brand_master (
+    brand_master_id SERIAL PRIMARY KEY,
+    brand_canonical TEXT UNIQUE NOT NULL,
+    brand_parent TEXT,
+    is_sub_brand BOOLEAN DEFAULT FALSE,
+    active_flag BOOLEAN DEFAULT TRUE
+);
+
+CREATE TABLE IF NOT EXISTS brand_alias (
+    alias_id SERIAL PRIMARY KEY,
+    brand_master_id INT REFERENCES brand_master(brand_master_id),
+    alias_text TEXT UNIQUE NOT NULL,
+    source TEXT,
+    confidence NUMERIC
+);
+
 CREATE TABLE IF NOT EXISTS dim_category (
     category_id SERIAL PRIMARY KEY,
     category_name TEXT UNIQUE NOT NULL,

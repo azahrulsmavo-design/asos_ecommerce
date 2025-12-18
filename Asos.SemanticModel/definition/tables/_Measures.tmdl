@@ -60,6 +60,23 @@ table _Measures
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	measure 'Total Revenue (Brand Rollup)' = ```
+			
+			VAR parent = SELECTEDVALUE ( brand_master[brand_parent] )
+			RETURN
+			IF (
+			    parent = "ASOS",
+			    CALCULATE (
+			        [Total Revenue],
+			        ALL ( brand_master ),
+			        brand_master[brand_parent] = "ASOS"
+			    ),
+			    [Total Revenue]
+			)
+			
+			```
+		lineageTag: 669a0dd2-8571-4d5b-8ec0-1aa34cbea226
+
 	partition _Measures = m
 		mode: import
 		source =

@@ -27,6 +27,7 @@ Pendekatan teknis *end-to-end* yang dilakukan:
     *   *Extract*: Ingest raw JSON/CSV data.
     *   *Transform*: Data Cleaning (Parsing JSON descriptions, Price normalization), Feature Engineering (Profit Margin calculation).
     *   *Load*: Menyimpan ke PostgreSQL.
+    *   *Brand Master*: Normalisasi dan deduplikasi brand menggunakan Fuzzy Matching (`rapidfuzz`).
 4.  **Advanced Analysis**:
     *   **RFM Segmentation**: Mengelompokkan pelanggan berdasarkan Recency, Frequency, Monetary.
     *   **Inventory Analysis**: Melacak stok historis untuk mendeteksi tren dan risiko OOS.
@@ -42,6 +43,7 @@ Hasil akhir dari proyek ini meliputi:
 *   **Interactive Dashboard (Streamlit)**: Aplikasi web 8 halaman (Sales, Inventory, Customer, dll).
 *   **BI Guide (Power BI)**: Tutorial lengkap (.md) untuk replikasi dashboard di Power BI.
 *   **SQL Database**: Schema database yang siap pakai (populated).
+*   **Brand Master System**: Sistem deduplikasi brand otomatis.
 *   **Source Code**: Full Python ETL & Analysis scripts.
 
 ## 6. How to Run
@@ -74,6 +76,11 @@ Hasil akhir dari proyek ini meliputi:
     # Run ETL & Mock Generator (Enterprise V2)
     python -m src.etl.etl_pipeline
     python src/etl/generate_mock_data.py
+    
+    # Run Brand Master Pipeline (Cleaning & Deduplication)
+    python fix_brands.py
+    python -m src.populate_brand_master
+    python src/analysis/verify_brand_master.py
     ```
 
 4.  **Jalankan Analisis & Dashboard**:

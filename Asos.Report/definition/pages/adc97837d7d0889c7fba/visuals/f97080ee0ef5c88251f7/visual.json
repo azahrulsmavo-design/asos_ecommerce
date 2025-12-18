@@ -4,10 +4,9 @@
   "position": {
     "x": 640,
     "y": 68,
-    "z": 1,
+    "z": 1000,
     "height": 192,
-    "width": 640,
-    "tabOrder": 1
+    "width": 640
   },
   "visual": {
     "visualType": "lineChart",
@@ -31,9 +30,6 @@
               "active": true
             }
           ]
-        },
-        "Series": {
-          "projections": []
         },
         "Y": {
           "projections": [

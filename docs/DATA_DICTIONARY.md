@@ -1,4 +1,4 @@
-# 📖 Kamus Data & Arsitektur Schema (Retail Dashboard)
+#  Kamus Data & Arsitektur Schema (Retail Dashboard)
 
 Dokumen ini menjelaskan struktur data (Schema) yang digunakan dalam proyek Retail Dashboard. Gunakan panduan ini untuk memahami bagaimana tabel saling berhubungan saat membuat visualisasi di Power BI, Tableau, atau Streamlit.
 
@@ -43,9 +43,16 @@ erDiagram
         int color_id FK
         int material_id FK
     }
-    DIM_BRAND {
-        int brand_id PK
-        text brand_name
+    DIM_BRAND_MASTER {
+        int brand_master_id PK
+        text brand_canonical
+        text brand_parent
+        bool is_sub_brand
+    }
+    DIM_BRAND_ALIAS {
+        int alias_id PK
+        int brand_master_id FK
+        text alias_text
     }
     DIM_CATEGORY {
         int category_id PK
@@ -85,7 +92,8 @@ erDiagram
     FACT_INVENTORY }|--|| DIM_PRODUCT : "what"
     FACT_INVENTORY }|--|| DIM_STORE : "where"
     
-    DIM_PRODUCT }|--|| DIM_BRAND : "brand"
+    DIM_PRODUCT }|--|| DIM_BRAND_MASTER : "brand_canonical"
+    DIM_BRAND_MASTER ||--|{ DIM_BRAND_ALIAS : "variations"
     DIM_PRODUCT }|--|| DIM_CATEGORY : "category"
     DIM_PRODUCT }|--|| DIM_COLOR : "color"
     DIM_PRODUCT }|--|| DIM_MATERIAL : "material"
@@ -169,7 +177,8 @@ Tabel utama produk yang ter-normalisasi (Snowflake schema).
 | `sku` | `text` | Stock Keeping Unit (Unique Code). |
 | `name` | `text` | Nama Produk. |
 | `url` | `text` | Link ke halaman produk di website ASOS. |
-| `brand_id` | `int` | FK ke `dim_brand`. |
+| `brand_master_id` | `int` | FK ke `brand_master` (Canonical Brand). |
+| `brand_id` | `int` | FK ke `dim_brand` (Legacy/Raw Brand). |
 | `category_id` | `int` | FK ke `dim_category`. |
 | `color_id` | `int` | FK ke `dim_color` (Warna utama). |
 | `base_price` | `numeric` | Harga dasar (sebelum diskon). |
@@ -177,7 +186,9 @@ Tabel utama produk yang ter-normalisasi (Snowflake schema).
 #### 2. Dimensi Pendukung (Lookup Tables)
 Tabel kecil untuk normalisasi, menghindari repetisi teks.
 
-*   **`dim_brand`**: `brand_id`, `brand_name` (Contoh: Nike, Adidas, ASOS DESIGN).
+*   **`brand_master`**: `brand_master_id`, `brand_canonical` (Official Name), `brand_parent` (Parent Company).
+*   **`brand_alias`**: `alias_id`, `brand_master_id`, `alias_text` (Variations/Misspellings mapped to master).
+*   **`dim_brand`** (Legacy): Raw extracted brand names.
 *   **`dim_category`**: `category_id`, `category_name`, `category_group` (Contoh: Men's Shoes, Accessories).
 *   **`dim_color`**: `color_id`, `color_name` (Warna spesifik), `color_family` (Pengelompokan warna).
 *   **`dim_size`**: `size_id`, `size_label` (S, M, L, UK 8, dll), `region` (UK/US/EU), `size_numeric`.

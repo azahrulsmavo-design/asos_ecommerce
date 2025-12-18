@@ -18,6 +18,38 @@ table 'public dim_brand'
 
 		annotation SummarizationSetBy = Automatic
 
+	column 'Brand Short Name (Auto)' = ```
+			
+			VAR t0 = TRIM ( 'public dim_brand'[brand_name] )
+			
+			-- ambil bagian setelah koma pertama jika ada, else pakai teks awal
+			VAR t1 =
+			    VAR p = FIND ( ",", t0, 1, 0 )
+			    RETURN IF ( p > 0, TRIM ( MID ( t0, p + 1, 200 ) ), t0 )
+			
+			-- ambil token pertama
+			VAR w1 =
+			    VAR p = FIND ( " ", t1, 1, 0 )
+			    RETURN IF ( p > 0, LEFT ( t1, p - 1 ), t1 )
+			
+			-- bersihkan tanda baca
+			VAR w =
+			    TRIM (
+			        SUBSTITUTE (
+			            SUBSTITUTE (
+			                SUBSTITUTE ( w1, ".", "" ),
+			            ",", "" ),
+			        "’", "" )
+			    )
+			RETURN
+			    IF ( LEN(w) = 0, "Unknown", w )
+			
+			```
+		lineageTag: 1291ca2a-1a34-4cf3-a470-fd6196fb2da8
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
 	partition 'public dim_brand' = m
 		mode: import
 		source =
@@ -28,4 +60,6 @@ table 'public dim_brand'
 				    public_dim_brand
 
 	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
 

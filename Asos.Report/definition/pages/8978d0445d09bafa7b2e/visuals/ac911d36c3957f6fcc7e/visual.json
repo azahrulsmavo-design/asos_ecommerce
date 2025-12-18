@@ -7,7 +7,7 @@
     "z": 6000,
     "height": 78.75,
     "width": 193.75,
-    "tabOrder": 6000
+    "tabOrder": 5000
   },
   "visual": {
     "visualType": "slicer",
@@ -163,23 +163,5 @@
       ]
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "5982b2f6d2477844c6c2",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "public fact_product_attributes"
-              }
-            },
-            "Property": "price_bucket"
-          }
-        },
-        "type": "Categorical"
-      }
-    ]
   }
 }

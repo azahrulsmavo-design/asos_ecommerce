@@ -6,8 +6,7 @@
     "y": 0,
     "z": 1000,
     "height": 100,
-    "width": 480,
-    "tabOrder": 1000
+    "width": 480
   },
   "visual": {
     "visualType": "cardVisual",
@@ -164,23 +163,5 @@
       ]
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "96d984f3c8858b96489a",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "_Measures"
-              }
-            },
-            "Property": "Last Refresh"
-          }
-        },
-        "type": "Advanced"
-      }
-    ]
   }
 }

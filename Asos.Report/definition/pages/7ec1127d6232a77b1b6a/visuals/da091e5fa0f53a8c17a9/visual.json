@@ -4,10 +4,10 @@
   "position": {
     "x": 640,
     "y": 432,
-    "z": 8005,
+    "z": 4000,
     "height": 258,
     "width": 640,
-    "tabOrder": 8005
+    "tabOrder": 4000
   },
   "visual": {
     "visualType": "clusteredColumnChart",
@@ -74,20 +74,6 @@
   },
   "filterConfig": {
     "filters": [
-      {
-        "name": "f56c6aedf643f8a0be28",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "_Measures"
-              }
-            },
-            "Property": "Total Revenue"
-          }
-        },
-        "type": "Advanced"
-      },
       {
         "name": "7f5a57a7295634bfd729",
         "field": {

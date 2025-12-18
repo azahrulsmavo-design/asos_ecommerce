@@ -6,7 +6,8 @@
     "y": 68,
     "z": 0,
     "height": 192,
-    "width": 640
+    "width": 640,
+    "tabOrder": 3000
   },
   "visual": {
     "visualType": "pivotTable",
@@ -135,51 +136,5 @@
       ]
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "4b2d0ee65dbb43050351",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "public dim_date"
-              }
-            },
-            "Property": "YearMonth"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "d915d960b9e417aa4809",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "public dim_category"
-              }
-            },
-            "Property": "Category Group (Derived)"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "3c27c1048c7b321ad4f8",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "_Measures"
-              }
-            },
-            "Property": "Profit Margin %"
-          }
-        },
-        "type": "Advanced"
-      }
-    ]
   }
 }

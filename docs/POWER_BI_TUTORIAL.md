@@ -24,7 +24,9 @@ Before starting:
     *   `dim_product` (Catalog)
     *   `dim_customer` (People)
     *   `dim_store` (Locations & Channel)
-    *   `dim_category`, `dim_brand`, `dim_size`
+    *   `dim_category`, `dim_size`
+    *   `brand_master` (Canonical Brands - **New**)
+    *   `dim_brand` (Legacy/Raw)
 
 5.  **Load**.
 
@@ -167,8 +169,9 @@ Low Stock Item Count = CALCULATE(COUNTROWS(fact_inventory), fact_inventory[stock
 **Goal**: SKU-level decisions.
 
 *   **A. Treemap**
-    *   **Hierarchy**: `Category` → `Brand`.
+    *   **Hierarchy**: `Category` → `Brand (Canonical)`.
     *   **Values**: `[Revenue]`.
+    *   *Note*: Use `brand_master[brand_canonical]` for clean names.
 
 *   **B. Ribbon Chart**
     *   **Axis**: `Date`.
@@ -253,7 +256,7 @@ Low Stock Item Count = CALCULATE(COUNTROWS(fact_inventory), fact_inventory[stock
 
 ---
 
-### 🎨 Styling & Theme (Best Practices)
+### Styling & Theme (Best Practices)
 1.  **JSON Theme**: Use a custom `theme.json` with neutral background and 1-2 brand accent colors.
 2.  **Consistency**: Use standard font (Segoe UI or Inter) and minimal borders.
 3.  **Portfolio Tips**:

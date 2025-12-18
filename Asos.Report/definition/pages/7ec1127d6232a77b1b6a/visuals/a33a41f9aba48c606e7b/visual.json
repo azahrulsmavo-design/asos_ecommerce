@@ -4,10 +4,9 @@
   "position": {
     "x": 30,
     "y": 24,
-    "z": 8001,
+    "z": 0,
     "height": 98,
-    "width": 1220,
-    "tabOrder": 8001
+    "width": 1220
   },
   "visual": {
     "visualType": "cardVisual",
@@ -272,20 +271,6 @@
               }
             },
             "Property": "Total Orders"
-          }
-        },
-        "type": "Advanced"
-      },
-      {
-        "name": "986295b7f53b5fd5663f",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "_Measures"
-              }
-            },
-            "Property": "Total Profit"
           }
         },
         "type": "Advanced"

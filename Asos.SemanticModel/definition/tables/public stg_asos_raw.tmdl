@@ -109,3 +109,5 @@ table 'public stg_asos_raw'
 
 	annotation PBI_ResultType = Table
 
+	annotation PBI_NavigationStepName = Navigation
+

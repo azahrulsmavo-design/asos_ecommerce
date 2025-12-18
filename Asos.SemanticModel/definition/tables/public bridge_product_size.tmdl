@@ -78,3 +78,5 @@ table 'public bridge_product_size'
 
 	annotation PBI_ResultType = Table
 
+	annotation PBI_NavigationStepName = Navigation
+

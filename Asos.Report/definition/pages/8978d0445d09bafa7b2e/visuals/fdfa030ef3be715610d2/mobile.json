@@ -1,0 +1,33 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainerMobileState/2.2.0/schema.json",
+  "position": {
+    "x": 0,
+    "y": 108,
+    "z": 0,
+    "height": 40,
+    "width": 324,
+    "tabOrder": 7000
+  },
+  "objects": {
+    "general": [
+      {
+        "properties": {
+          "paragraphs": [
+            {
+              "textRuns": [
+                {
+                  "value": "ASOS Retail Intelligence",
+                  "textStyle": {
+                    "fontWeight": "bold",
+                    "fontSize": "14pt",
+                    "color": "#8410ff"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
